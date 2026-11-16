@@ -12,13 +12,10 @@ import {
   DollarSign,
   AlertTriangle,
   Boxes,
-  Percent,
   X,
   AlertCircle,
   Sparkles,
   UploadCloud,
-  Link as LinkIcon,
-  Image as ImageIcon,
   CheckCircle2,
   ShoppingCart,
   Phone,
@@ -77,6 +74,17 @@ export default function Products() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutSuccess, setCheckoutSuccess] = useState(null);
 
+  // Restock State (Owner Adds More Products directly from table)
+  const [isRestockModalOpen, setIsRestockModalOpen] = useState(false);
+  const [restockProduct, setRestockProduct] = useState(null);
+  const [restockQty, setRestockQty] = useState('');
+  const [restockSupplier, setRestockSupplier] = useState('Owner Restock');
+  const [restockCost, setRestockCost] = useState('');
+  const [restockNotes, setRestockNotes] = useState('');
+  const [isRestocking, setIsRestocking] = useState(false);
+  const [restockError, setRestockError] = useState('');
+  const [restockNotification, setRestockNotification] = useState('');
+
   // Modals for Product CRUD
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -99,6 +107,7 @@ export default function Products() {
     purchasePrice: '',
     sellingPrice: '',
     minStockLevel: '5',
+    initialStock: '0',
   });
 
   // Fetch Categories
@@ -147,7 +156,7 @@ export default function Products() {
   }, [fetchProducts]);
 
   // =========================================================================
-  // CART OPERATIONS (Add to Cart on Right & Calculate Total Price)
+  // CART OPERATIONS (When someone buys product -> auto History)
   // =========================================================================
 
   const addToCart = (product) => {
@@ -157,7 +166,6 @@ export default function Products() {
     setCart((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
-        // Don't exceed available stock
         if (existing.quantity >= availableStock) {
           return prev;
         }
@@ -178,8 +186,8 @@ export default function Products() {
           if (item.product.id === productId) {
             const availableStock = parseInt(item.product.current_stock || 0, 10);
             const newQty = item.quantity + delta;
-            if (newQty <= 0) return null; // Remove if 0
-            if (newQty > availableStock) return item; // Don't exceed stock
+            if (newQty <= 0) return null;
+            if (newQty > availableStock) return item;
             return { ...item, quantity: newQty };
           }
           return item;
@@ -205,9 +213,9 @@ export default function Products() {
     (sum, item) => sum + (parseFloat(item.product.selling_price) || 0) * item.quantity,
     0
   );
-  const cartGrandTotal = cartSubtotal; // Clean direct total
+  const cartGrandTotal = cartSubtotal;
 
-  // Handle Cart Checkout
+  // Handle Cart Checkout (Deducts stock & automatically logs to History)
   const handleCheckout = async (e) => {
     e.preventDefault();
     if (cart.length === 0) return;
@@ -235,12 +243,56 @@ export default function Products() {
       if (res.success && res.data) {
         setCheckoutSuccess(res.data);
         clearCart();
-        fetchProducts(); // Refresh live stock numbers in table
+        fetchProducts();
       }
     } catch (err) {
       alert(err.message || 'Checkout failed. Please check product stock.');
     } finally {
       setIsCheckingOut(false);
+    }
+  };
+
+  // =========================================================================
+  // RESTOCK OPERATIONS (When owner adds more products -> auto History)
+  // =========================================================================
+
+  const openRestockModal = (product) => {
+    setRestockProduct(product);
+    setRestockQty('');
+    setRestockSupplier('Owner Restock');
+    setRestockCost(product.purchase_price || '');
+    setRestockNotes('');
+    setRestockError('');
+    setIsRestockModalOpen(true);
+  };
+
+  const handleRestockSubmit = async (e) => {
+    e.preventDefault();
+    const qty = parseInt(restockQty, 10);
+    if (!qty || qty <= 0) {
+      setRestockError('Please enter a valid quantity greater than zero.');
+      return;
+    }
+
+    try {
+      setIsRestocking(true);
+      setRestockError('');
+      await api.post('/history/add', {
+        productId: restockProduct.id,
+        quantity: qty,
+        supplierName: restockSupplier.trim() || 'Owner Restock',
+        unitCost: restockCost ? parseFloat(restockCost) : null,
+        notes: restockNotes.trim() || 'Restocked by owner',
+      });
+
+      setRestockNotification(`Successfully added ${qty} units of ${restockProduct.name}. Automatically logged to History!`);
+      setIsRestockModalOpen(false);
+      fetchProducts();
+      setTimeout(() => setRestockNotification(''), 4500);
+    } catch (err) {
+      setRestockError(err.message || 'Failed to restock product');
+    } finally {
+      setIsRestocking(false);
     }
   };
 
@@ -302,6 +354,7 @@ export default function Products() {
       purchasePrice: '',
       sellingPrice: '',
       minStockLevel: '5',
+      initialStock: '0',
     });
     setImageInputMode('preset');
     setFormError('');
@@ -321,6 +374,7 @@ export default function Products() {
       purchasePrice: p.purchase_price,
       sellingPrice: p.selling_price,
       minStockLevel: p.min_stock_level,
+      initialStock: '0',
     });
     setImageInputMode(p.image_url ? 'url' : 'preset');
     setFormError('');
@@ -344,6 +398,7 @@ export default function Products() {
         purchasePrice: parseFloat(formData.purchasePrice) || 0,
         sellingPrice: parseFloat(formData.sellingPrice) || 0,
         minStockLevel: parseInt(formData.minStockLevel, 10) || 5,
+        initialStock: parseInt(formData.initialStock, 10) || 0,
       };
 
       if (editingProduct) {
@@ -390,14 +445,14 @@ export default function Products() {
             Products & Point of Sale
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Browse machinery & metals catalog, view Base stock, and add items to cart for instant checkout.
+            Browse machinery & metals catalog, restock inventory as owner, and process customer sales with auto-logged History.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={fetchProducts}
-            className="p-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-slate-600 transition-colors"
+            className="p-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-slate-600 transition-colors cursor-pointer"
             title="Refresh Catalog"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -414,6 +469,14 @@ export default function Products() {
           )}
         </div>
       </div>
+
+      {/* Restock Notification */}
+      {restockNotification && (
+        <div className="flex items-center gap-2 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-semibold shadow-xs animate-in fade-in">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span>{restockNotification}</span>
+        </div>
+      )}
 
       {/* ========================================================================= */}
       {/* 2. STATS KPI BAR                                                          */}
@@ -445,7 +508,7 @@ export default function Products() {
           value={`${cart.length} (${cartTotalUnits} units)`}
           icon={ShoppingCart}
           color="blue"
-          subtitle={`Subtotal: $${cartSubtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          subtitle={`Total: $${cartSubtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
         />
       </div>
 
@@ -548,7 +611,7 @@ export default function Products() {
                       <th className="py-3 px-3 text-center">Base Stock</th>
                       <th className="py-3 px-4 text-right">Unit Price</th>
                       <th className="py-3 px-4 text-center">Add to Cart</th>
-                      {canManage && <th className="py-3 px-3 text-right">Actions</th>}
+                      {canManage && <th className="py-3 px-3 text-right">Owner Actions</th>}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -662,10 +725,19 @@ export default function Products() {
                             )}
                           </td>
 
-                          {/* 6. Edit/Delete Actions */}
+                          {/* 6. Owner Actions: Restock + Edit + Delete */}
                           {canManage && (
                             <td className="py-3 px-3 text-right whitespace-nowrap">
-                              <div className="flex items-center justify-end gap-1">
+                              <div className="flex items-center justify-end gap-1.5">
+                                <button
+                                  onClick={() => openRestockModal(p)}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-200 hover:border-transparent transition-all cursor-pointer"
+                                  title="Owner Restock: Add stock units into Base Warehouse (Auto-logs to History)"
+                                >
+                                  <Plus className="w-3 h-3" />
+                                  <span>Restock</span>
+                                </button>
+
                                 <button
                                   onClick={() => openEditModal(p)}
                                   className="p-1.5 text-slate-400 hover:text-indigo-600 rounded-md hover:bg-slate-100 cursor-pointer"
@@ -913,7 +985,7 @@ export default function Products() {
               </div>
               <h3 className="text-xl font-bold text-slate-900">Sale Recorded Successfully!</h3>
               <p className="text-xs text-slate-500">
-                Stock has been deducted from Base Warehouse and logged to History.
+                Stock has been deducted from Base Warehouse and automatically logged to History.
               </p>
             </div>
 
@@ -964,7 +1036,125 @@ export default function Products() {
       )}
 
       {/* ========================================================================= */}
-      {/* 5. CREATE / EDIT PRODUCT MODAL (For Admins and Managers)                  */}
+      {/* 5. RESTOCK MODAL (Owner Adding More Products to Base Stock)               */}
+      {/* ========================================================================= */}
+      {isRestockModalOpen && restockProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-100">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
+              <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                <Boxes className="w-5 h-5 text-emerald-600" />
+                Add More Stock (Owner Restock)
+              </h3>
+              <button
+                onClick={() => setIsRestockModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleRestockSubmit} className="p-6 space-y-4">
+              {restockError && (
+                <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{restockError}</span>
+                </div>
+              )}
+
+              {/* Product Info Card */}
+              <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-1">
+                <div className="font-bold text-slate-900 text-sm">{restockProduct.name}</div>
+                <div className="font-mono text-indigo-600">SKU: {restockProduct.sku}</div>
+                <div className="text-slate-500">
+                  Current Base Stock: <span className="font-bold text-slate-800">{restockProduct.current_stock || 0} units</span>
+                </div>
+              </div>
+
+              {/* Quantity to Add */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                  Quantity Units to Add *
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  required
+                  autoFocus
+                  placeholder="e.g. 10"
+                  value={restockQty}
+                  onChange={(e) => setRestockQty(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              {/* Supplier / Restock Source */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                  Supplier / Restock Source *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Owner Restock or Titan Machinery"
+                  value={restockSupplier}
+                  onChange={(e) => setRestockSupplier(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              {/* Unit Cost */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                  Unit Cost ($)
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="Unit purchase cost"
+                  value={restockCost}
+                  onChange={(e) => setRestockCost(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              {/* Notes */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                  Restock Notes (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Stock shipment received by owner"
+                  value={restockNotes}
+                  onChange={(e) => setRestockNotes(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsRestockModalOpen(false)}
+                  className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isRestocking}
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                >
+                  {isRestocking ? 'Restocking...' : 'Add Stock (Auto-Logs History)'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 6. CREATE / EDIT PRODUCT MODAL (For Admins and Managers)                  */}
       {/* ========================================================================= */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
@@ -1048,6 +1238,26 @@ export default function Products() {
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
+
+              {/* Initial Stock (Only for new product creation) */}
+              {!editingProduct && (
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                    Initial Stock in Base Warehouse (Auto-logs to History)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="e.g. 10 units"
+                    value={formData.initialStock}
+                    onChange={(e) => setFormData({ ...formData, initialStock: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <span className="text-[10px] text-slate-400 mt-0.5 block">
+                    Added to Base Warehouse and automatically recorded as an ADD entry in History.
+                  </span>
+                </div>
+              )}
 
               {/* Pricing */}
               <div className="grid grid-cols-2 gap-3">

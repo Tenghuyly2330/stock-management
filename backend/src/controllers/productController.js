@@ -232,6 +232,7 @@ const createProduct = async (req, res, next) => {
       purchasePrice,
       sellingPrice,
       minStockLevel,
+      initialStock,
     } = req.body;
 
     if (!name || !name.trim()) {
@@ -302,10 +303,31 @@ const createProduct = async (req, res, next) => {
       minStock,
     ]);
 
+    const newProduct = insertRes.rows[0];
+    const initialQty = parseInt(initialStock, 10);
+    if (!isNaN(initialQty) && initialQty > 0) {
+      // 1. Add to Base Warehouse (warehouse_id = 1)
+      await query(
+        `INSERT INTO inventory (product_id, warehouse_id, quantity)
+         VALUES ($1, 1, $2)
+         ON CONFLICT (product_id, warehouse_id)
+         DO UPDATE SET quantity = inventory.quantity + EXCLUDED.quantity`,
+        [newProduct.id, initialQty]
+      );
+
+      // 2. Automatically log to stock_movements / history
+      await query(
+        `INSERT INTO stock_movements (
+          product_id, destination_warehouse_id, movement_type, quantity, reference_type, reference_id, notes, created_by
+        ) VALUES ($1, 1, 'IN', $2, 'PURCHASE_ORDER', 'Owner Initial Stock', 'Initial inventory added by owner on product creation', $3)`,
+        [newProduct.id, initialQty, req.user?.id || 1]
+      );
+    }
+
     return successResponse(res, {
       statusCode: 201,
       message: 'Product created successfully',
-      data: insertRes.rows[0],
+      data: newProduct,
     });
   } catch (error) {
     next(error);
