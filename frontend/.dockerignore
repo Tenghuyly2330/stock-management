@@ -1,0 +1,17 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Build artifacts
+dist
+.vite
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE and git
+.vscode
+.git
+.gitignore
