@@ -34,14 +34,14 @@ import StatusCard from '../components/common/StatusCard';
 // Sample Presets for Farm Machinery & Metal Products
 const IMAGE_PRESETS = [
   {
-    label: 'Utility Tractor',
+    label: 'Farm Tractor',
     url: 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=800&q=80',
-    category: 'Farm Machinery',
+    category: 'Farm Machines',
   },
   {
     label: 'Rotary Tiller',
     url: 'https://images.unsplash.com/photo-1589824783837-6169889fa20f?auto=format&fit=crop&w=800&q=80',
-    category: 'Farm Machinery',
+    category: 'Farm Machines',
   },
   {
     label: 'Steel Rebar',
@@ -49,7 +49,7 @@ const IMAGE_PRESETS = [
     category: 'Metals',
   },
   {
-    label: 'Corrugated Metal',
+    label: 'Roofing Sheet',
     url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80',
     category: 'Metals',
   },
