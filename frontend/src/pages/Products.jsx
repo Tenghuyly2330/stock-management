@@ -942,9 +942,25 @@ export default function Products() {
       {/* 4. CHECKOUT SUCCESS RECEIPT MODAL                                         */}
       {/* ========================================================================= */}
       {checkoutSuccess && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-100 p-6 space-y-5 animate-in fade-in zoom-in-95">
-            <div className="text-center space-y-2">
+        <div 
+          onClick={() => setCheckoutSuccess(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="relative bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-100 p-6 space-y-5 animate-in fade-in zoom-in-95"
+          >
+            {/* Top-Right X Close Button */}
+            <button
+              type="button"
+              onClick={() => setCheckoutSuccess(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+              title="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="text-center space-y-2 pt-2">
               <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
                 <Check className="w-8 h-8 stroke-[3]" />
               </div>
@@ -971,15 +987,6 @@ export default function Products() {
                   ${parseFloat(checkoutSuccess.totalAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
-            </div>
-
-            <div className="pt-1">
-              <button
-                onClick={() => setCheckoutSuccess(null)}
-                className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
-              >
-                <span>Done / New Order</span>
-              </button>
             </div>
           </div>
         </div>
