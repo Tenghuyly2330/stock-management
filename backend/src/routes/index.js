@@ -8,6 +8,7 @@ const warehouseRoutes = require('./warehouseRoutes');
 const supplierRoutes = require('./supplierRoutes');
 const inventoryRoutes = require('./inventoryRoutes');
 const historyRoutes = require('./historyRoutes');
+const settingsRoutes = require('./settingsRoutes');
 
 const router = express.Router();
 
@@ -21,6 +22,7 @@ router.use('/warehouses', warehouseRoutes);
 router.use('/suppliers', supplierRoutes);
 router.use('/inventory', inventoryRoutes);
 router.use('/history', historyRoutes);
+router.use('/settings', settingsRoutes);
 
 // Root API welcome
 router.get('/', (req, res) => {

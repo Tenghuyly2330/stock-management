@@ -33,14 +33,12 @@ export default function Users() {
   const [selectedRole, setSelectedRole] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
 
-  // Modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [formError, setFormError] = useState('');
   const [formSubmitting, setFormSubmitting] = useState(false);
 
-  // Form states
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -80,7 +78,6 @@ export default function Users() {
     fetchUsers();
   }, [fetchUsers]);
 
-  // Handle Create User
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
@@ -112,7 +109,6 @@ export default function Users() {
     }
   };
 
-  // Handle Edit User
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
@@ -191,10 +187,7 @@ export default function Users() {
       {/* Header bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">User Management & RBAC</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Manage administrative personnel, warehouse operators, and role-based permissions.
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">User Management</h1>
         </div>
 
         {currentUser?.role === 'admin' && (
@@ -219,7 +212,6 @@ export default function Users() {
         )}
       </div>
 
-      {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatusCard
           title="Total Accounts"
@@ -264,7 +256,7 @@ export default function Users() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, email..."
-            className="w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-4 py-1.5 text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-4 py-1.5 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
           />
         </div>
 
@@ -272,7 +264,7 @@ export default function Users() {
           <select
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700 focus:bg-white focus:border-indigo-500 focus:outline-none"
+            className="rounded-lg border px-3 py-1.5 text-sm text-slate-700 focus:bg-white focus:border-indigo-500 focus:outline-none"
           >
             <option value="">All Roles</option>
             {roles.map((r) => (
@@ -285,7 +277,7 @@ export default function Users() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700 focus:bg-white focus:border-indigo-500 focus:outline-none"
+            className="rounded-lg border px-3 py-1.5 text-sm text-slate-700 focus:bg-white focus:border-indigo-500 focus:outline-none"
           >
             <option value="">All Statuses</option>
             <option value="active">Active Only</option>
@@ -302,7 +294,6 @@ export default function Users() {
         </div>
       </div>
 
-      {/* Users Data Table */}
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-slate-600">
@@ -447,7 +438,6 @@ export default function Users() {
         </div>
       </div>
 
-      {/* CREATE USER MODAL */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-slate-200">

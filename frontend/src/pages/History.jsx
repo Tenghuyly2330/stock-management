@@ -83,25 +83,12 @@ export default function History() {
 
   return (
     <div className="space-y-6">
-      {/* ========================================================================= */}
-      {/* 1. TOP BANNER (Automated Live Activity Ledger)                           */}
-      {/* ========================================================================= */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Automated Live Ledger
-            </span>
-            <span className="text-xs text-slate-400 font-medium">Base Warehouse (BASE-01)</span>
-          </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <HistoryIcon className="w-7 h-7 text-indigo-600" />
             Transaction History
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Automatically logs every customer purchase (via Cart) and every product added or restocked by the owner.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -124,9 +111,6 @@ export default function History() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 2. STATS KPI CARDS                                                        */}
-      {/* ========================================================================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatusCard
           title="Products Bought (Sold)"
@@ -162,11 +146,7 @@ export default function History() {
         />
       </div>
 
-      {/* ========================================================================= */}
-      {/* 3. FILTER TABS & SEARCH BAR                                               */}
-      {/* ========================================================================= */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
-        {/* Filter Pills */}
         <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto">
           <button
             onClick={() => setActiveTab('ALL')}
@@ -202,7 +182,6 @@ export default function History() {
           </button>
         </div>
 
-        {/* Search Input */}
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -223,9 +202,6 @@ export default function History() {
         </div>
       </div>
 
-      {/* ========================================================================= */}
-      {/* 4. TRANSACTION LOG TABLE                                                 */}
-      {/* ========================================================================= */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
         {loading ? (
           <div className="py-20 text-center text-slate-400">
@@ -272,7 +248,6 @@ export default function History() {
                         </div>
                       </td>
 
-                      {/* Type: BOUGHT or ADDED */}
                       <td className="py-3 px-4 whitespace-nowrap">
                         {isBuy ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
@@ -287,13 +262,11 @@ export default function History() {
                         )}
                       </td>
 
-                      {/* Product Name & SKU */}
                       <td className="py-3 px-4">
                         <div className="font-semibold text-slate-900 leading-tight">{row.product_name}</div>
                         <div className="text-xs font-mono text-indigo-600 mt-0.5">{row.product_sku}</div>
                       </td>
 
-                      {/* Quantity Units */}
                       <td className="py-3 px-4 text-right whitespace-nowrap">
                         <span
                           className={`font-mono font-bold text-sm ${
@@ -304,7 +277,6 @@ export default function History() {
                         </span>
                       </td>
 
-                      {/* Customer / Supplier with Phone or Name */}
                       <td className="py-3 px-4">
                         {isBuy ? (
                           row.customer_phone && row.customer_name && row.customer_name !== row.customer_phone ? (
@@ -358,7 +330,6 @@ export default function History() {
                         )}
                       </td>
 
-                      {/* Total Amount */}
                       <td className="py-3 px-4 text-right whitespace-nowrap">
                         <span className="font-mono font-bold text-slate-900 text-sm">
                           ${parseFloat(row.total_amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -370,7 +341,6 @@ export default function History() {
                         )}
                       </td>
 
-                      {/* Processed By User */}
                       <td className="py-3 px-4 text-xs text-slate-700 whitespace-nowrap">
                         <div className="flex items-center gap-1.5">
                           <User className="w-3.5 h-3.5 text-slate-400" />

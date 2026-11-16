@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -11,7 +12,6 @@ import {
   Trash2,
   Package,
   Boxes,
-  CheckCircle2,
   X,
   AlertCircle,
   FolderTree,
@@ -26,14 +26,12 @@ export default function Categories() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
-  // Modals
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Form states
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -61,7 +59,6 @@ export default function Categories() {
     fetchCategories();
   }, [fetchCategories]);
 
-  // Handle Create
   const handleCreate = async (e) => {
     e.preventDefault();
     setFormError('');
@@ -82,7 +79,6 @@ export default function Categories() {
     }
   };
 
-  // Handle Edit
   const handleEdit = async (e) => {
     e.preventDefault();
     setFormError('');
@@ -110,7 +106,6 @@ export default function Categories() {
     setIsEditModalOpen(true);
   };
 
-  // Handle Delete
   const handleDelete = async (cat) => {
     if (cat.product_count > 0) {
       toast.warning(`Cannot delete category "${cat.name}" because it contains ${cat.product_count} product(s).`);
@@ -137,12 +132,11 @@ export default function Categories() {
 
   return (
     <div className="space-y-6">
-      {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">Category Taxonomy</h1>
           <p className="text-sm text-slate-500 mt-1">
-            Organize inventory items into logical hierarchies for reporting, pricing, and stock monitoring.
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed, veritatis.
           </p>
         </div>
 
@@ -161,7 +155,6 @@ export default function Categories() {
         )}
       </div>
 
-      {/* KPI Statistic Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatusCard
           title="Active Categories"

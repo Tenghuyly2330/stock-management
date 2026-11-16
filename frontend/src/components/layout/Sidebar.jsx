@@ -27,7 +27,6 @@ const navigation = [
 export default function Sidebar({ isOpen, onClose }) {
   return (
     <>
-      {/* Mobile backdrop */}
       {isOpen && (
         <div
           onClick={onClose}
@@ -35,23 +34,18 @@ export default function Sidebar({ isOpen, onClose }) {
         />
       )}
 
-      {/* Sidebar container */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-slate-200 bg-white transition-transform duration-200 ease-in-out lg:static lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Brand Header */}
         <div className="flex h-16 items-center justify-between px-6 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-100">
               <Boxes className="h-6 w-6" />
             </div>
             <div>
-              <span className="text-lg font-bold text-slate-900 tracking-tight">StockSync</span>
-              <span className="block text-[10px] font-semibold tracking-wider text-indigo-600 uppercase">
-                Machinery & Metals
-              </span>
+              <span className="text-lg font-bold text-slate-900 tracking-tight">HouseStock</span>
             </div>
           </div>
           <button
@@ -62,7 +56,6 @@ export default function Sidebar({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Navigation items */}
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
           <div className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
             Menu
@@ -94,7 +87,6 @@ export default function Sidebar({ isOpen, onClose }) {
           ))}
         </nav>
 
-        {/* Base Warehouse Quick Info Pill */}
         <div className="p-4 border-t border-slate-100 bg-slate-50/60">
           <div className="flex items-center gap-2 text-xs text-slate-600">
             <div className="w-2 h-2 rounded-full bg-emerald-500"></div>

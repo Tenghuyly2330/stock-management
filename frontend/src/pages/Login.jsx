@@ -51,10 +51,9 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen flex-col justify-center bg-slate-50 py-12 sm:px-6 lg:px-8">
-      {/* Top right health monitor */}
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+      {/* <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
         <ConnectionBadge />
-      </div>
+      </div> */}
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
@@ -63,7 +62,7 @@ export default function Login() {
           </div>
         </div>
         <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-          StockSync Enterprise
+          HouseStock
         </h2>
         <p className="mt-1 text-center text-sm text-slate-500">
           Sign in to your stock and warehouse management account
@@ -92,7 +91,7 @@ export default function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@company.com"
                   required
-                  className="w-full rounded-lg border border-slate-200 pl-9 pr-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
+                  className="w-full rounded-lg border border-slate-200 pl-9 pr-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
                 />
               </div>
             </div>
@@ -109,7 +108,7 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   required
-                  className="w-full rounded-lg border border-slate-200 pl-9 pr-10 py-2 text-sm text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
+                  className="w-full rounded-lg border border-slate-200 pl-9 pr-10 py-2 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
                 />
                 <button
                   type="button"
@@ -140,7 +139,6 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Quick Demo Credentials Autofill */}
           <div className="mt-6 pt-6 border-t border-slate-100">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 text-center mb-3">
               Quick-Fill Demo Credentials
@@ -148,7 +146,7 @@ export default function Login() {
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
-                onClick={() => handleQuickLogin('admin@stocksync.com', 'Admin@123456')}
+                onClick={() => handleQuickLogin('admin@gmail.com', '123456')}
                 className="flex flex-col items-center p-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 text-xs font-semibold transition"
               >
                 <span>Admin</span>
@@ -157,7 +155,7 @@ export default function Login() {
 
               <button
                 type="button"
-                onClick={() => handleQuickLogin('manager@stocksync.com', 'Manager@123456')}
+                onClick={() => handleQuickLogin('manager@gmail.com', '123456')}
                 className="flex flex-col items-center p-2 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 text-xs font-semibold transition"
               >
                 <span>Manager</span>
@@ -166,7 +164,7 @@ export default function Login() {
 
               <button
                 type="button"
-                onClick={() => handleQuickLogin('staff@stocksync.com', 'Staff@123456')}
+                onClick={() => handleQuickLogin('staff@gmail.com', '123456')}
                 className="flex flex-col items-center p-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-semibold transition"
               >
                 <span>Staff</span>
@@ -176,9 +174,9 @@ export default function Login() {
           </div>
         </div>
 
-        <p className="mt-4 text-center text-xs text-slate-400">
+        {/* <p className="mt-4 text-center text-xs text-slate-400">
           Protected by Bcrypt 10-round salt & JWT 24h Bearer authentication.
-        </p>
+        </p> */}
       </div>
     </div>
   );

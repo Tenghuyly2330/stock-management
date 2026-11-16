@@ -8,10 +8,8 @@ export default function DashboardLayout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50">
-      {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Main Content Area */}
       <div className="flex flex-1 flex-col overflow-y-auto">
         <Navbar onToggleSidebar={() => setSidebarOpen((prev) => !prev)} />
         <main className="flex-1 p-4 sm:p-6 lg:p-8">

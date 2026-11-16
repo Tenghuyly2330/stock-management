@@ -6,16 +6,12 @@ import {
   DollarSign,
   AlertTriangle,
   ShoppingCart,
-  PlusCircle,
   Warehouse,
   History,
-  Tractor,
   Layers,
   ArrowRight,
-  TrendingUp,
   ArrowUpRight,
   ArrowDownLeft,
-  User,
 } from 'lucide-react';
 import StatusCard from '../components/common/StatusCard';
 import api from '../api/axios';
@@ -70,20 +66,12 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Top Welcome / Base Header */}
-      <div className="rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 sm:p-7 text-white shadow-md">
+      <div className="rounded-2xl bg-linear-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 sm:p-7 text-white shadow-md">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold mb-2.5 border border-indigo-400/30">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              Primary Storage: Main Base Warehouse (BASE-01)
-            </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              Farm Machinery & Metals Dashboard
+              Dashboard
             </h1>
-            <p className="mt-1 text-slate-300 text-sm max-w-2xl leading-relaxed">
-              Track stock balances in Base Warehouse, monitor real-time sales purchases, and oversee inventory arrivals.
-            </p>
           </div>
 
           <div className="flex items-center gap-2.5">
@@ -105,7 +93,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatusCard
           title="Catalog SKUs"
@@ -141,9 +128,7 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Two Column Layout: Recent History & Categories */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Recent History (Who Bought & Who Added) */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden flex flex-col justify-between">
           <div>
             <div className="p-5 border-b border-slate-100 flex items-center justify-between">
@@ -226,9 +211,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Right Col: Categories & Base Warehouse Summary */}
         <div className="space-y-6">
-          {/* Base Warehouse Card */}
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -15,8 +16,6 @@ import {
   AlertCircle,
   X,
   Plus,
-  Shield,
-  Layers,
 } from 'lucide-react';
 
 export default function WarehousePage() {
@@ -29,7 +28,6 @@ export default function WarehousePage() {
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
 
-  // Edit Base Warehouse Modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editFormData, setEditFormData] = useState({
     name: '',
@@ -38,7 +36,6 @@ export default function WarehousePage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Quick Add Stock to Base Modal
   const [isAddStockModalOpen, setIsAddStockModalOpen] = useState(false);
   const [productsList, setProductsList] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState('');
@@ -46,12 +43,10 @@ export default function WarehousePage() {
   const [addSupplier, setAddSupplier] = useState('');
   const [addNotes, setAddNotes] = useState('');
 
-  // Fetch Base Warehouse Details (Warehouse 1 is base)
   const fetchBaseWarehouse = async () => {
     try {
       setLoading(true);
       setError(null);
-      // Fetch Warehouse 1 (Base Warehouse)
       const res = await api.get('/warehouses/1');
       if (res.data) {
         setWarehouse(res.data);
@@ -70,7 +65,6 @@ export default function WarehousePage() {
 
   useEffect(() => {
     fetchBaseWarehouse();
-    // Load products for quick stock add
     api.get('/products?limit=150&status=active').then((res) => {
       if (res.data) {
         setProductsList(res.data);
@@ -78,7 +72,6 @@ export default function WarehousePage() {
     }).catch(console.error);
   }, []);
 
-  // Update Base Warehouse Info
   const handleUpdateWarehouse = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -102,7 +95,6 @@ export default function WarehousePage() {
     }
   };
 
-  // Quick Add Stock into Base Warehouse
   const handleQuickAddStock = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -147,22 +139,12 @@ export default function WarehousePage() {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
-              Base Facility (1 is Base)
-            </span>
-            <span className="font-mono text-xs font-semibold text-slate-400">Code: BASE-01</span>
-          </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <Warehouse className="w-7 h-7 text-indigo-600" />
             {warehouse?.name || 'Main Base Warehouse'}
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Primary storage depot and centralized inventory hub for all farm machinery, equipment, and industrial metals.
-          </p>
         </div>
 
         {canManage && (
@@ -185,7 +167,6 @@ export default function WarehousePage() {
         )}
       </div>
 
-      {/* Notifications */}
       {successMsg && (
         <div className="flex items-center gap-2 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-sm">
           <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
@@ -199,7 +180,6 @@ export default function WarehousePage() {
         </div>
       )}
 
-      {/* KPI Cards for Base Warehouse */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
@@ -244,7 +224,6 @@ export default function WarehousePage() {
         </div>
       </div>
 
-      {/* Facility Contact & Location Card */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-6 text-xs text-slate-600">
           <div className="flex items-center gap-2">
@@ -253,7 +232,7 @@ export default function WarehousePage() {
           </div>
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-slate-400 shrink-0" />
-            <span className="font-medium">{warehouse?.contact_phone || '+1-800-555-BASE'}</span>
+            <span className="font-medium">{warehouse?.contact_phone || '+855-10-800-994'}</span>
           </div>
         </div>
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">
@@ -262,9 +241,7 @@ export default function WarehousePage() {
         </span>
       </div>
 
-      {/* Inventory Stored in Base Warehouse */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-        {/* Table Search Header */}
         <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="relative w-full sm:w-80">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -348,7 +325,6 @@ export default function WarehousePage() {
         )}
       </div>
 
-      {/* Edit Base Warehouse Modal */}
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-100">
@@ -418,7 +394,6 @@ export default function WarehousePage() {
         </div>
       )}
 
-      {/* Quick Add Stock Modal */}
       {isAddStockModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-100">

@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
@@ -23,7 +25,6 @@ import {
   User,
   Minus,
   Trash,
-  ArrowRight,
   Receipt,
   Check,
 } from 'lucide-react';
@@ -39,18 +40,15 @@ export default function Products() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Filters
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [stockStatus, setStockStatus] = useState('');
 
-  // Cart State (Add to Cart on Right)
   const [cart, setCart] = useState([]);
   const [customerInput, setCustomerInput] = useState('');
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutSuccess, setCheckoutSuccess] = useState(null);
 
-  // Restock State (Owner Adds More Products directly from table)
   const [isRestockModalOpen, setIsRestockModalOpen] = useState(false);
   const [restockProduct, setRestockProduct] = useState(null);
   const [restockQty, setRestockQty] = useState('');
@@ -61,17 +59,14 @@ export default function Products() {
   const [restockError, setRestockError] = useState('');
   const [restockNotification, setRestockNotification] = useState('');
 
-  // Modals for Product CRUD
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Image mode in form: 'upload' | 'url'
   const [imageInputMode, setImageInputMode] = useState('upload');
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  // Form State
   const [formData, setFormData] = useState({
     name: '',
     categoryId: '',
@@ -86,7 +81,6 @@ export default function Products() {
     initialStock: '0',
   });
 
-  // Fetch Categories
   const fetchCategories = useCallback(async () => {
     try {
       const res = await api.get('/categories');
@@ -96,7 +90,6 @@ export default function Products() {
     }
   }, []);
 
-  // Fetch Products
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
@@ -130,10 +123,6 @@ export default function Products() {
     }, 250);
     return () => clearTimeout(timer);
   }, [fetchProducts]);
-
-  // =========================================================================
-  // CART OPERATIONS (When someone buys product -> auto History)
-  // =========================================================================
 
   const addToCart = (product) => {
     const availableStock = parseInt(product.current_stock || 0, 10);
@@ -194,7 +183,6 @@ export default function Products() {
     setCustomerInput('');
   };
 
-  // Calculations for Total Price
   const cartTotalUnits = cart.reduce((sum, item) => sum + item.quantity, 0);
   const cartSubtotal = cart.reduce(
     (sum, item) => sum + (parseFloat(item.product.selling_price) || 0) * item.quantity,
@@ -202,7 +190,6 @@ export default function Products() {
   );
   const cartGrandTotal = cartSubtotal;
 
-  // Handle Cart Checkout (Deducts stock & automatically logs to History)
   const handleCheckout = async (e) => {
     e.preventDefault();
     if (cart.length === 0) return;
@@ -239,10 +226,7 @@ export default function Products() {
     }
   };
 
-  // =========================================================================
-  // RESTOCK OPERATIONS (When owner adds more products -> auto History)
-  // =========================================================================
-
+  // restock
   const openRestockModal = (product) => {
     setRestockProduct(product);
     setRestockQty('');
@@ -284,10 +268,7 @@ export default function Products() {
     }
   };
 
-  // =========================================================================
-  // PRODUCT MANAGEMENT (Create / Edit / Delete)
-  // =========================================================================
-
+  // manage product
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -430,18 +411,12 @@ export default function Products() {
 
   return (
     <div className="space-y-6">
-      {/* ========================================================================= */}
-      {/* 1. HEADER SECTION                                                         */}
-      {/* ========================================================================= */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <Package className="w-7 h-7 text-indigo-600" />
             Products & Point of Sale
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Browse machinery & metals catalog, restock inventory as owner, and process customer sales with auto-logged History.
-          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -473,9 +448,6 @@ export default function Products() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 2. STATS KPI BAR                                                          */}
-      {/* ========================================================================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatusCard
           title="Active Products"
@@ -507,15 +479,9 @@ export default function Products() {
         />
       </div>
 
-      {/* ========================================================================= */}
-      {/* 3. MAIN SPLIT LAYOUT: PRODUCTS TABLE (LEFT) + ADD TO CART (RIGHT)         */}
-      {/* ========================================================================= */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* ----------------------------------------------------------------------- */}
-        {/* LEFT COLUMN: FILTER CONTROLS & PRODUCT TABLE (8 / 12)                  */}
-        {/* ----------------------------------------------------------------------- */}
         <div className="lg:col-span-8 space-y-4">
-          {/* Search & Category Filter Pills */}
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-3">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
@@ -525,7 +491,7 @@ export default function Products() {
                   placeholder="Search products by short name or SKU..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
                 {search && (
                   <button
@@ -537,7 +503,6 @@ export default function Products() {
                 )}
               </div>
 
-              {/* Stock Status Filter */}
               <select
                 value={stockStatus}
                 onChange={(e) => setStockStatus(e.target.value)}
@@ -550,7 +515,6 @@ export default function Products() {
               </select>
             </div>
 
-            {/* Quick Category Filter Pills */}
             <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-100">
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-1">
                 Category:
@@ -581,7 +545,6 @@ export default function Products() {
             </div>
           </div>
 
-          {/* PRODUCT DATA TABLE */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
             {loading ? (
               <div className="py-20 text-center text-slate-400">
@@ -623,7 +586,6 @@ export default function Products() {
                             inCartQty > 0 ? 'bg-indigo-50/40' : ''
                           }`}
                         >
-                          {/* 1. Product Image & Name */}
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-3">
                               {p.image_url ? (
@@ -648,14 +610,12 @@ export default function Products() {
                             </div>
                           </td>
 
-                          {/* 2. Category */}
                           <td className="py-3 px-3 whitespace-nowrap">
                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
                               {p.category_name || 'General'}
                             </span>
                           </td>
 
-                          {/* 3. Base Stock */}
                           <td className="py-3 px-3 text-center whitespace-nowrap">
                             {isOutOfStock ? (
                               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
@@ -687,7 +647,6 @@ export default function Products() {
                             )}
                           </td>
 
-                          {/* 5. Add to Cart Button */}
                           <td className="py-3 px-4 text-center whitespace-nowrap">
                             {isOutOfStock ? (
                               <button
@@ -723,7 +682,7 @@ export default function Products() {
                             )}
                           </td>
 
-                          {/* 6. Owner Actions: Restock + Edit + Delete */}
+                          {/* Restock + Edit + Delete */}
                           {canManage && (
                             <td className="py-3 px-3 text-right whitespace-nowrap">
                               <div className="flex items-center justify-end gap-1.5">
@@ -763,12 +722,8 @@ export default function Products() {
           </div>
         </div>
 
-        {/* ----------------------------------------------------------------------- */}
-        {/* RIGHT COLUMN: SHOPPING CART & POS CHECKOUT PANEL (4 / 12)               */}
-        {/* ----------------------------------------------------------------------- */}
         <div className="lg:col-span-4 sticky top-6 space-y-4">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden">
-            {/* Cart Header */}
             <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5 text-indigo-400" />
@@ -787,20 +742,15 @@ export default function Products() {
               )}
             </div>
 
-            {/* Cart Body */}
             {cart.length === 0 ? (
               <div className="p-8 text-center text-slate-400">
                 <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300">
                   <ShoppingCart className="w-7 h-7" />
                 </div>
                 <h4 className="font-semibold text-slate-700 text-sm">Cart is Empty</h4>
-                <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
-                  Click <span className="font-semibold text-indigo-600">"+ Add to Cart"</span> on any product in the table to start a customer order.
-                </p>
               </div>
             ) : (
               <form onSubmit={handleCheckout} className="p-5 space-y-4">
-                {/* Cart Items List */}
                 <div className="space-y-3 max-h-72 overflow-y-auto pr-1 divide-y divide-slate-100">
                   {cart.map((item) => {
                     const availableStock = parseInt(item.product.current_stock || 0, 10);
@@ -808,7 +758,7 @@ export default function Products() {
                       (parseFloat(item.product.selling_price) || 0) * item.quantity;
 
                     return (
-                      <div key={item.product.id} className="pt-3 first:pt-0 flex items-center gap-3">
+                      <div key={item.product.id} className="first:pt-0 flex items-center gap-3">
                         {item.product.image_url ? (
                           <img
                             src={item.product.image_url}
@@ -830,7 +780,6 @@ export default function Products() {
                           </div>
                         </div>
 
-                        {/* Quantity Stepper */}
                         <div className="flex items-center gap-1.5 border border-slate-200 rounded-lg p-1 bg-slate-50">
                           <button
                             type="button"
@@ -856,7 +805,6 @@ export default function Products() {
                           </button>
                         </div>
 
-                        {/* Subtotal & Delete */}
                         <div className="text-right shrink-0">
                           <div className="font-mono font-bold text-slate-900 text-xs">
                             ${itemSubtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -874,7 +822,6 @@ export default function Products() {
                   })}
                 </div>
 
-                {/* Calculation Box */}
                 <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-2">
                   <div className="flex items-center justify-between text-xs text-slate-500">
                     <span>Total Products:</span>

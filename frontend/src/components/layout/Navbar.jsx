@@ -13,7 +13,7 @@ export default function Navbar({ onToggleSidebar }) {
   const roleDisplay = user?.role ? user.role.toUpperCase() : 'USER';
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white/95 px-4 sm:px-6 backdrop-blur">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white/95 px-4 sm:px-6 backdrop-blur py-4">
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebar}
@@ -24,33 +24,22 @@ export default function Navbar({ onToggleSidebar }) {
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="relative hidden md:block">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search products, SKU, purchase orders..."
-            className="w-72 lg:w-96 rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-4 py-1.5 text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
-          />
-        </div>
       </div>
 
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* Live Backend & DB Health Indicator */}
-        <ConnectionBadge />
+        {/* <ConnectionBadge /> */}
 
-        {/* Notification bell */}
-        <button
+        {/* <button
           type="button"
           aria-label="View notifications"
           className="relative p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition"
         >
           <Bell className="w-5 h-5" />
           <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white"></span>
-        </button>
+        </button> */}
 
-        {/* User Pill & Logout */}
         <div className="flex items-center gap-3 pl-2 border-l border-slate-200">
-          <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white font-semibold text-xs shadow-xs">
+          <div className="h-9 w-9 rounded-full bg-linear-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white font-semibold text-xs shadow-xs">
             {initials}
           </div>
           <div className="hidden sm:block text-left">

@@ -33,7 +33,6 @@ export default function Suppliers() {
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
 
-  // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState(null);
@@ -48,7 +47,6 @@ export default function Suppliers() {
     is_active: true,
   });
 
-  // Supplier History Modal
   const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(false);
@@ -169,7 +167,6 @@ export default function Suppliers() {
     }
   };
 
-  // High-level statistics
   const totalVendors = suppliers.length;
   const activeVendors = suppliers.filter((s) => s.is_active).length;
   const totalPOs = suppliers.reduce((sum, s) => sum + (parseInt(s.total_purchase_orders, 10) || 0), 0);
@@ -180,16 +177,12 @@ export default function Suppliers() {
 
   return (
     <div className="space-y-6">
-      {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <Users2 className="w-7 h-7 text-indigo-600" />
             Supplier Directory
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Manage approved vendor contacts, addresses, payment terms, and procurement order history.
-          </p>
         </div>
         {canManage && (
           <button
@@ -202,7 +195,6 @@ export default function Suppliers() {
         )}
       </div>
 
-      {/* Notifications */}
       {successMsg && (
         <div className="flex items-center gap-2 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-sm">
           <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
@@ -216,7 +208,6 @@ export default function Suppliers() {
         </div>
       )}
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
@@ -261,7 +252,6 @@ export default function Suppliers() {
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row gap-3 items-center justify-between">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -287,7 +277,6 @@ export default function Suppliers() {
         </div>
       </div>
 
-      {/* Suppliers Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-slate-500">
@@ -394,7 +383,6 @@ export default function Suppliers() {
         )}
       </div>
 
-      {/* Create / Edit Supplier Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-lg w-full shadow-xl overflow-hidden border border-slate-100">
@@ -536,7 +524,6 @@ export default function Suppliers() {
         </div>
       )}
 
-      {/* Supplier Purchase History Modal */}
       {historyModalOpen && selectedSupplier && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] shadow-xl flex flex-col overflow-hidden border border-slate-100">
