@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   Package,
   Plus,
@@ -30,6 +31,7 @@ import StatusCard from '../components/common/StatusCard';
 
 export default function Products() {
   const { user } = useAuth();
+  const toast = useToast();
   const navigate = useNavigate();
   const canManage = user?.role === 'admin' || user?.role === 'manager';
 
@@ -135,20 +137,26 @@ export default function Products() {
 
   const addToCart = (product) => {
     const availableStock = parseInt(product.current_stock || 0, 10);
-    if (availableStock <= 0) return;
+    if (availableStock <= 0) {
+      toast.warning(`${product.name} is currently out of stock!`);
+      return;
+    }
 
     setCart((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
         if (existing.quantity >= availableStock) {
+          toast.warning(`Cannot add more. Max stock available is ${availableStock} units.`);
           return prev;
         }
+        toast.info(`Increased ${product.name} quantity to ${existing.quantity + 1}`);
         return prev.map((item) =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
+      toast.success(`Added ${product.name} to cart!`);
       return [...prev, { product, quantity: 1 }];
     });
   };
@@ -161,7 +169,10 @@ export default function Products() {
             const availableStock = parseInt(item.product.current_stock || 0, 10);
             const newQty = item.quantity + delta;
             if (newQty <= 0) return null;
-            if (newQty > availableStock) return item;
+            if (newQty > availableStock) {
+              toast.warning(`Max available stock is ${availableStock} units.`);
+              return item;
+            }
             return { ...item, quantity: newQty };
           }
           return item;
@@ -171,7 +182,11 @@ export default function Products() {
   };
 
   const removeFromCart = (productId) => {
-    setCart((prev) => prev.filter((item) => item.product.id !== productId));
+    setCart((prev) => {
+      const item = prev.find((i) => i.product.id === productId);
+      if (item) toast.info(`Removed ${item.product.name} from cart`);
+      return prev.filter((item) => item.product.id !== productId);
+    });
   };
 
   const clearCart = () => {
@@ -194,7 +209,7 @@ export default function Products() {
 
     const cleanCustomer = customerInput.trim();
     if (!cleanCustomer) {
-      alert('Please enter a customer phone number or name.');
+      toast.error('Please enter a customer phone number or name.');
       return;
     }
 
@@ -212,12 +227,13 @@ export default function Products() {
       const res = await api.post('/history/checkout', payload);
 
       if (res.success && res.data) {
+        toast.success(`Sale completed for ${cleanCustomer}! Total: $${cartGrandTotal.toFixed(2)}`);
         setCheckoutSuccess(res.data);
         clearCart();
         fetchProducts();
       }
     } catch (err) {
-      alert(err.message || 'Checkout failed. Please check product stock.');
+      toast.error(err.message || 'Checkout failed. Please check product stock.');
     } finally {
       setIsCheckingOut(false);
     }
@@ -242,6 +258,7 @@ export default function Products() {
     const qty = parseInt(restockQty, 10);
     if (!qty || qty <= 0) {
       setRestockError('Please enter a valid quantity greater than zero.');
+      toast.warning('Please enter a valid quantity greater than zero.');
       return;
     }
 
@@ -256,12 +273,12 @@ export default function Products() {
         notes: restockNotes.trim() || 'Restocked by owner',
       });
 
-      setRestockNotification(`Successfully added ${qty} units of ${restockProduct.name}. Automatically logged to History!`);
+      toast.success(`Successfully added ${qty} units of ${restockProduct.name}! (Auto-logged to History)`);
       setIsRestockModalOpen(false);
       fetchProducts();
-      setTimeout(() => setRestockNotification(''), 4500);
     } catch (err) {
       setRestockError(err.message || 'Failed to restock product');
+      toast.error(err.message || 'Failed to restock product');
     } finally {
       setIsRestocking(false);
     }
@@ -292,9 +309,11 @@ export default function Products() {
           imageUrl: res.data.imageUrl,
           imagePublicId: res.data.imagePublicId,
         }));
+        toast.success('Image uploaded successfully to Cloudinary!');
       }
     } catch (err) {
       setFormError(err.message || 'Image upload failed.');
+      toast.error(err.message || 'Image upload failed.');
     } finally {
       setUploadingImage(false);
     }
@@ -374,14 +393,17 @@ export default function Products() {
 
       if (editingProduct) {
         await api.put(`/products/${editingProduct.id}`, payload);
+        toast.success(`Product "${payload.name}" updated successfully!`);
       } else {
         await api.post('/products', payload);
+        toast.success(`Product "${payload.name}" created successfully!`);
       }
 
       setIsModalOpen(false);
       fetchProducts();
     } catch (err) {
       setFormError(err.message || 'Failed to save product');
+      toast.error(err.message || 'Failed to save product');
     } finally {
       setSubmitting(false);
     }
@@ -391,9 +413,11 @@ export default function Products() {
     if (!window.confirm(`Are you sure you want to delete "${name}"?`)) return;
     try {
       await api.delete(`/products/${id}`);
+      toast.success(`Product "${name}" deleted.`);
       fetchProducts();
     } catch (err) {
       alert(err.message || 'Failed to delete product');
+      toast.error(err.message || 'Failed to delete product');
     }
   };
 

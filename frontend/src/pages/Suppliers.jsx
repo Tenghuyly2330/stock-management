@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   Users2,
   Plus,
@@ -21,6 +22,7 @@ import {
 
 export default function Suppliers() {
   const { user } = useAuth();
+  const toast = useToast();
   const canManage = user?.role === 'admin' || user?.role === 'manager';
   const isAdmin = user?.role === 'admin';
 
@@ -118,16 +120,17 @@ export default function Suppliers() {
     try {
       if (editingSupplier) {
         await api.put(`/suppliers/${editingSupplier.id}`, formData);
-        setSuccessMsg(`Supplier '${formData.company_name}' updated successfully`);
+        toast.success(`Supplier '${formData.company_name}' updated successfully`);
       } else {
         await api.post('/suppliers', formData);
-        setSuccessMsg(`Supplier '${formData.company_name}' registered successfully`);
+        toast.success(`Supplier '${formData.company_name}' registered successfully`);
       }
       handleCloseModal();
       fetchSuppliers();
-      setTimeout(() => setSuccessMsg(null), 4000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save supplier');
+      const msg = err.response?.data?.message || err.message || 'Failed to save supplier';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -141,7 +144,9 @@ export default function Suppliers() {
       const res = await api.get(`/suppliers/${sup.id}`);
       setSelectedSupplier(res.data || res);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load supplier purchase history');
+      const msg = err.response?.data?.message || err.message || 'Failed to load supplier purchase history';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoadingHistory(false);
     }
@@ -154,11 +159,13 @@ export default function Suppliers() {
 
     try {
       const res = await api.delete(`/suppliers/${sup.id}`);
-      setSuccessMsg(res.data.message || `Supplier '${sup.company_name}' deleted`);
+      const msg = res.data?.message || `Supplier '${sup.company_name}' deleted`;
+      toast.success(msg);
       fetchSuppliers();
-      setTimeout(() => setSuccessMsg(null), 4000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete supplier');
+      const msg = err.response?.data?.message || err.message || 'Failed to delete supplier';
+      setError(msg);
+      toast.error(msg);
     }
   };
 

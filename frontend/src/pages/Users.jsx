@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   Users as UsersIcon,
   UserPlus,
@@ -24,6 +25,7 @@ import StatusCard from '../components/common/StatusCard';
 
 export default function Users() {
   const { user: currentUser } = useAuth();
+  const toast = useToast();
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,12 +98,15 @@ export default function Users() {
 
       const res = await api.post('/users', payload);
       if (res.success) {
+        toast.success(`User "${formData.firstName} ${formData.lastName}" registered successfully!`);
         setIsCreateModalOpen(false);
         setFormData({ firstName: '', lastName: '', email: '', password: '', phone: '', roleId: '' });
         fetchUsers();
       }
     } catch (err) {
-      setFormError(err.message || 'Failed to create user');
+      const msg = err.message || 'Failed to create user';
+      setFormError(msg);
+      toast.error(msg);
     } finally {
       setFormSubmitting(false);
     }
@@ -127,12 +132,15 @@ export default function Users() {
 
       const res = await api.put(`/users/${selectedUser.id}`, payload);
       if (res.success) {
+        toast.success(`User "${formData.firstName} ${formData.lastName}" updated successfully!`);
         setIsEditModalOpen(false);
         setSelectedUser(null);
         fetchUsers();
       }
     } catch (err) {
-      setFormError(err.message || 'Failed to update user');
+      const msg = err.message || 'Failed to update user';
+      setFormError(msg);
+      toast.error(msg);
     } finally {
       setFormSubmitting(false);
     }
@@ -154,7 +162,7 @@ export default function Users() {
 
   const handleToggleStatus = async (targetUser) => {
     if (targetUser.id === currentUser?.id) {
-      alert('You cannot deactivate your own logged-in account.');
+      toast.warning('You cannot deactivate your own logged-in account.');
       return;
     }
 
@@ -165,9 +173,10 @@ export default function Users() {
 
     try {
       await api.put(`/users/${targetUser.id}`, { isActive: !targetUser.is_active });
+      toast.success(`User ${targetUser.first_name} ${targetUser.is_active ? 'deactivated' : 'activated'}.`);
       fetchUsers();
     } catch (err) {
-      alert(err.message || 'Action failed');
+      toast.error(err.message || 'Action failed');
     }
   };
 

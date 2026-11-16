@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   Warehouse,
   Plus,
@@ -22,6 +23,7 @@ import {
 
 export default function Warehouses() {
   const { user } = useAuth();
+  const toast = useToast();
   const canManage = user?.role === 'admin' || user?.role === 'manager';
   const isAdmin = user?.role === 'admin';
 
@@ -113,16 +115,17 @@ export default function Warehouses() {
     try {
       if (editingWarehouse) {
         await api.put(`/warehouses/${editingWarehouse.id}`, formData);
-        setSuccessMsg(`Warehouse '${formData.name}' updated successfully`);
+        toast.success(`Warehouse '${formData.name}' updated successfully`);
       } else {
         await api.post('/warehouses', formData);
-        setSuccessMsg(`Warehouse '${formData.name}' created successfully`);
+        toast.success(`Warehouse '${formData.name}' created successfully`);
       }
       handleCloseModal();
       fetchWarehouses();
-      setTimeout(() => setSuccessMsg(null), 4000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save warehouse');
+      const msg = err.response?.data?.message || err.message || 'Failed to save warehouse';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -137,7 +140,9 @@ export default function Warehouses() {
       const res = await api.get(`/warehouses/${wh.id}`);
       setSelectedWarehouse(res.data.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load warehouse inventory');
+      const msg = err.response?.data?.message || err.message || 'Failed to load warehouse inventory';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoadingInventory(false);
     }
@@ -146,7 +151,7 @@ export default function Warehouses() {
   // Delete or deactivate warehouse
   const handleDelete = async (wh) => {
     if (wh.total_stock_units > 0) {
-      alert(`Cannot delete ${wh.name}. It currently holds ${wh.total_stock_units} units of stock. Please transfer or adjust stock first.`);
+      toast.warning(`Cannot delete ${wh.name}. It currently holds ${wh.total_stock_units} units of stock.`);
       return;
     }
 
@@ -156,11 +161,13 @@ export default function Warehouses() {
 
     try {
       const res = await api.delete(`/warehouses/${wh.id}`);
-      setSuccessMsg(res.data.message || `Warehouse '${wh.name}' deleted`);
+      const msg = res.data.message || `Warehouse '${wh.name}' deleted`;
+      toast.success(msg);
       fetchWarehouses();
-      setTimeout(() => setSuccessMsg(null), 4000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete warehouse');
+      const msg = err.response?.data?.message || err.message || 'Failed to delete warehouse';
+      setError(msg);
+      toast.error(msg);
     }
   };
 

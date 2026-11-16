@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { Boxes, Eye, EyeOff, Lock, Mail, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
 import ConnectionBadge from '../components/common/ConnectionBadge';
 
@@ -12,6 +13,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
+  const toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,15 +25,19 @@ export default function Login() {
 
     if (!email || !password) {
       setError('Please provide both your email address and password.');
+      toast.warning('Please provide both your email address and password.');
       return;
     }
 
     setLoading(true);
     try {
       await login(email, password);
+      toast.success('Signed in successfully! Welcome to StockSync.');
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err.message || 'Authentication failed. Please verify your credentials.');
+      const msg = err.message || 'Authentication failed. Please verify your credentials.';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

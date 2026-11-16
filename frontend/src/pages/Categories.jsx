@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   Layers,
   Plus,
@@ -19,6 +20,7 @@ import StatusCard from '../components/common/StatusCard';
 
 export default function Categories() {
   const { user } = useAuth();
+  const toast = useToast();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -67,12 +69,14 @@ export default function Categories() {
     try {
       const res = await api.post('/categories', formData);
       if (res.success) {
+        toast.success(`Category "${formData.name}" created successfully!`);
         setIsCreateModalOpen(false);
         setFormData({ name: '', description: '' });
         fetchCategories();
       }
     } catch (err) {
       setFormError(err.message || 'Failed to create category');
+      toast.error(err.message || 'Failed to create category');
     } finally {
       setSubmitting(false);
     }
@@ -86,12 +90,14 @@ export default function Categories() {
     try {
       const res = await api.put(`/categories/${selectedCategory.id}`, formData);
       if (res.success) {
+        toast.success(`Category "${formData.name}" updated successfully!`);
         setIsEditModalOpen(false);
         setSelectedCategory(null);
         fetchCategories();
       }
     } catch (err) {
       setFormError(err.message || 'Failed to update category');
+      toast.error(err.message || 'Failed to update category');
     } finally {
       setSubmitting(false);
     }
@@ -107,7 +113,7 @@ export default function Categories() {
   // Handle Delete
   const handleDelete = async (cat) => {
     if (cat.product_count > 0) {
-      alert(`Cannot delete category '${cat.name}' because it contains ${cat.product_count} product(s). Please reassign or delete the products first.`);
+      toast.warning(`Cannot delete category "${cat.name}" because it contains ${cat.product_count} product(s).`);
       return;
     }
 
@@ -117,9 +123,11 @@ export default function Categories() {
 
     try {
       await api.delete(`/categories/${cat.id}`);
+      toast.success(`Category "${cat.name}" deleted.`);
       fetchCategories();
     } catch (err) {
       alert(err.message || 'Failed to delete category');
+      toast.error(err.message || 'Failed to delete category');
     }
   };
 
