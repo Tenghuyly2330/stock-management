@@ -4,6 +4,9 @@ const authRoutes = require('./authRoutes');
 const userRoutes = require('./userRoutes');
 const categoryRoutes = require('./categoryRoutes');
 const productRoutes = require('./productRoutes');
+const warehouseRoutes = require('./warehouseRoutes');
+const supplierRoutes = require('./supplierRoutes');
+const inventoryRoutes = require('./inventoryRoutes');
 
 const router = express.Router();
 
@@ -13,6 +16,9 @@ router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/products', productRoutes);
+router.use('/warehouses', warehouseRoutes);
+router.use('/suppliers', supplierRoutes);
+router.use('/inventory', inventoryRoutes);
 
 // Root API welcome
 router.get('/', (req, res) => {
@@ -49,6 +55,29 @@ router.get('/', (req, res) => {
         create: 'POST /api/products',
         update: 'PUT /api/products/:id',
         delete: 'DELETE /api/products/:id',
+      },
+      warehouses: {
+        list: 'GET /api/warehouses',
+        get: 'GET /api/warehouses/:id',
+        create: 'POST /api/warehouses',
+        update: 'PUT /api/warehouses/:id',
+        delete: 'DELETE /api/warehouses/:id',
+      },
+      suppliers: {
+        list: 'GET /api/suppliers',
+        get: 'GET /api/suppliers/:id',
+        create: 'POST /api/suppliers',
+        update: 'PUT /api/suppliers/:id',
+        delete: 'DELETE /api/suppliers/:id',
+      },
+      inventory: {
+        list: 'GET /api/inventory',
+        lowStock: 'GET /api/inventory/low-stock',
+        movements: 'GET /api/inventory/movements',
+        stockIn: 'POST /api/inventory/stock-in',
+        stockOut: 'POST /api/inventory/stock-out',
+        adjust: 'POST /api/inventory/adjust',
+        transfer: 'POST /api/inventory/transfer',
       },
     },
   });

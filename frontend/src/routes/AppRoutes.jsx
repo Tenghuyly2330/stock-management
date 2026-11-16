@@ -6,6 +6,9 @@ import Login from '../pages/Login';
 import Users from '../pages/Users';
 import Products from '../pages/Products';
 import Categories from '../pages/Categories';
+import Warehouses from '../pages/Warehouses';
+import Suppliers from '../pages/Suppliers';
+import Inventory from '../pages/Inventory';
 import PlaceholderPage from '../pages/PlaceholderPage';
 import NotFound from '../pages/NotFound';
 import ProtectedRoute from '../components/common/ProtectedRoute';
@@ -31,6 +34,11 @@ export default function AppRoutes() {
         <Route path="products" element={<Products />} />
         <Route path="categories" element={<Categories />} />
 
+        {/* Warehouse & Inventory Logistics - Live in Day 5 */}
+        <Route path="inventory" element={<Inventory />} />
+        <Route path="warehouses" element={<Warehouses />} />
+        <Route path="suppliers" element={<Suppliers />} />
+
         {/* User Management & RBAC - Live in Day 3 */}
         <Route
           path="users"
@@ -42,37 +50,6 @@ export default function AppRoutes() {
         />
 
         {/* Future Modules Roadmaps */}
-        <Route
-          path="inventory"
-          element={
-            <PlaceholderPage
-              title="Inventory & Stock Movements"
-              stageNumber="5"
-              description="Live ledger of stock in, stock out, inventory adjustments, and multi-warehouse transfers with audit trails."
-              features={[
-                'Stock In (Procurement receiving) & Stock Out (Sales dispatch)',
-                'Warehouse-to-Warehouse transfer with double-entry ledger',
-                'Physical audit inventory count adjustments',
-                'Immutable stock movement history with transaction locks',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="warehouses"
-          element={
-            <PlaceholderPage
-              title="Warehouse Management"
-              stageNumber="5"
-              description="Manage physical distribution centers, retail storage rooms, and bin locations with per-location stock levels."
-              features={[
-                'Multi-location configuration and contact mapping',
-                'Per-warehouse inventory balances',
-                'Transfer routing and logistics tracking',
-              ]}
-            />
-          }
-        />
         <Route
           path="purchases"
           element={
@@ -99,21 +76,6 @@ export default function AppRoutes() {
                 'Sales order creation with dynamic pricing',
                 'Real-time stock deduction with negative stock prevention',
                 'Receipt and invoice generation with PDF download',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="suppliers"
-          element={
-            <PlaceholderPage
-              title="Supplier Directory"
-              stageNumber="6"
-              description="Vendor profiles, contact persons, historical purchase orders, and lead-time tracking."
-              features={[
-                'Supplier contact profiles and payment terms',
-                'Historical purchase orders and fulfilled items',
-                'Vendor reliability ratings',
               ]}
             />
           }
