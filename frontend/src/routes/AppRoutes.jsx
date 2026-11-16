@@ -4,6 +4,8 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import Dashboard from '../pages/Dashboard';
 import Login from '../pages/Login';
 import Users from '../pages/Users';
+import Products from '../pages/Products';
+import Categories from '../pages/Categories';
 import PlaceholderPage from '../pages/PlaceholderPage';
 import NotFound from '../pages/NotFound';
 import ProtectedRoute from '../components/common/ProtectedRoute';
@@ -25,6 +27,10 @@ export default function AppRoutes() {
       >
         <Route index element={<Dashboard />} />
         
+        {/* Core Catalog Modules - Live in Day 4 */}
+        <Route path="products" element={<Products />} />
+        <Route path="categories" element={<Categories />} />
+
         {/* User Management & RBAC - Live in Day 3 */}
         <Route
           path="users"
@@ -36,37 +42,6 @@ export default function AppRoutes() {
         />
 
         {/* Future Modules Roadmaps */}
-        <Route
-          path="products"
-          element={
-            <PlaceholderPage
-              title="Product Management"
-              stageNumber="4"
-              description="Manage master catalog of goods, barcodes, SKUs, category links, pricing tiers, and minimum safety stock thresholds."
-              features={[
-                'Product CRUD with Barcode / SKU generation',
-                'Image upload and description editor',
-                'Cost price vs. Selling price profit margin computation',
-                'Instant search, filtering, and pagination',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="categories"
-          element={
-            <PlaceholderPage
-              title="Category Taxonomy"
-              stageNumber="4"
-              description="Organize inventory items into logical hierarchies for streamlined reporting, filtering, and bulk operations."
-              features={[
-                'Nested and flat category structures',
-                'Category-level stock counts and metrics',
-                'Quick edit and batch re-assignment',
-              ]}
-            />
-          }
-        />
         <Route
           path="inventory"
           element={

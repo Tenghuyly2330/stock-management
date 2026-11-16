@@ -12,3 +12,4 @@ router.get('/me', authenticate, getMe);
 router.put('/change-password', authenticate, changePassword);
 
 module.exports = router;
+
