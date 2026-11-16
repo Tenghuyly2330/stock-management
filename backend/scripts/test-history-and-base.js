@@ -62,6 +62,8 @@ async function runTest() {
     console.log(`2. Base Warehouse: ${baseWhRes.body.data?.name} (Code: ${baseWhRes.body.data?.code})`);
     console.log(`   Items in Base: ${baseWhRes.body.data?.inventory?.length}, Total Units: ${baseWhRes.body.data?.total_stock_units}`);
 
+    const targetProductId = baseWhRes.body.data?.inventory[0]?.product_id;
+
     // 3. Test Add Product Stock (Arrival)
     const addRes = await request(
       {
@@ -75,7 +77,7 @@ async function runTest() {
         },
       },
       {
-        productId: 1, // Tractor or first product
+        productId: targetProductId,
         quantity: 3,
         supplierName: 'Titan Industrial Machinery Supply',
         notes: 'Spring season stock intake',
@@ -97,7 +99,7 @@ async function runTest() {
         },
       },
       {
-        productId: 1,
+        productId: targetProductId,
         quantity: 1,
         customerName: 'Robert Vance Family Ranch',
         notes: 'Commercial delivery to North field',
@@ -131,3 +133,4 @@ async function runTest() {
 }
 
 runTest();
+

@@ -20,3 +20,4 @@ router.post('/add', authorize('admin', 'manager', 'staff'), recordAddProduct);
 router.post('/buy', authorize('admin', 'manager', 'staff'), recordBuyProduct);
 
 module.exports = router;
+

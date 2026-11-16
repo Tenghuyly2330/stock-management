@@ -53,16 +53,6 @@ const IMAGE_PRESETS = [
     url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80',
     category: 'Metals',
   },
-  {
-    label: 'Water Pump',
-    url: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=800&q=80',
-    category: 'Irrigation',
-  },
-  {
-    label: 'Barbed Wire',
-    url: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80',
-    category: 'Fencing',
-  },
 ];
 
 export default function Products() {
@@ -900,7 +890,7 @@ export default function Products() {
                 {/* Preset Picker Buttons */}
                 <div className="mb-3">
                   <p className="text-[11px] text-slate-500 mb-1.5 font-medium">Quick Farm & Metal Presets:</p>
-                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                     {IMAGE_PRESETS.map((preset) => (
                       <button
                         type="button"
