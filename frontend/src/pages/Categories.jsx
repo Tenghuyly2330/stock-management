@@ -256,7 +256,7 @@ export default function Categories() {
                         </div>
                         <div>
                           <div className="font-semibold text-slate-900">{c.name}</div>
-                          <span className="text-[11px] text-slate-400 font-mono">ID: #{c.id}</span>
+                          <span className="text-[11px] text-slate-400">ID: #{c.id}</span>
                         </div>
                       </div>
                     </td>

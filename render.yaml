@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: stock-management-backend
+    env: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DB_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        value: https://your-project.vercel.app
+      - key: CLOUDINARY_CLOUD_NAME
+        value: ds7w2aznz
+      - key: CLOUDINARY_API_KEY
+        value: "263134127278318"
+      - key: CLOUDINARY_API_SECRET
+        value: dG-rWWvaktUUOhTFdOWDSjeyh28
+      - key: CLOUDINARY_FOLDER
+        value: stock

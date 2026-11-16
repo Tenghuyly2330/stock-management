@@ -60,8 +60,8 @@ export function ToastProvider({ children }) {
       {/* Top-Right Toast Notification Container */}
       <aside aria-label="Notifications" className="fixed top-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0">
         {toasts.map((t) => {
-          let badgeStyles = 'bg-white border-slate-200 text-slate-800 shadow-lg';
-          let icon = <Info className="w-5 h-5 text-indigo-500 shrink-0" />;
+          let badgeStyles;
+          let icon;
 
           if (t.type === 'success') {
             badgeStyles = 'bg-emerald-50/95 border-emerald-200 text-emerald-950 shadow-emerald-500/10 shadow-lg';

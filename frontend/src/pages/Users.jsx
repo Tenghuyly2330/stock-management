@@ -350,7 +350,7 @@ export default function Users() {
                                 </span>
                               )}
                             </div>
-                            <span className="text-xs text-slate-400 font-mono">ID: #{u.id}</span>
+                            <span className="text-xs text-slate-400">ID: #{u.id}</span>
                           </div>
                         </div>
                       </td>
@@ -389,7 +389,7 @@ export default function Users() {
                         </span>
                       </td>
 
-                      <td className="px-6 py-4 text-xs text-slate-500 font-mono">
+                      <td className="px-6 py-4 text-xs text-slate-500">
                         {u.last_login_at
                           ? new Date(u.last_login_at).toLocaleString('en-US', {
                               month: 'short',

@@ -12,3 +12,4 @@ CREATE TABLE IF NOT EXISTS system_settings (
 INSERT INTO system_settings (id, company_name, currency_symbol, support_email, support_phone, reorder_alert_threshold)
 VALUES (1, 'StockSync Farm Machinery & Industrial Metals', '$', 'support@stocksync.com', '+1-800-555-BASE', 5)
 ON CONFLICT (id) DO NOTHING;
+

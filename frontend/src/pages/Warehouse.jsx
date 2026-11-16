@@ -290,7 +290,7 @@ export default function WarehousePage() {
                     <tr key={item.inventory_id} className="hover:bg-slate-50/70 transition-colors">
                       <td className="py-3 px-4">
                         <div className="font-semibold text-slate-900 leading-tight">{item.product_name}</div>
-                        <div className="text-xs font-mono text-indigo-600 mt-0.5">SKU: {item.sku}</div>
+                        <div className="text-xs text-indigo-600 mt-0.5">SKU: {item.sku}</div>
                       </td>
                       <td className="py-3 px-4 text-xs text-slate-600">{item.category_name}</td>
                       <td className="py-3 px-4 text-center">
@@ -307,13 +307,13 @@ export default function WarehousePage() {
                         </span>
                       </td>
                       <td className="py-3 px-4 text-right">
-                        <span className="font-mono font-bold text-base text-slate-900">{item.quantity}</span>
+                        <span className="font-bold text-base text-slate-900">{item.quantity}</span>
                         <span className="text-[11px] text-slate-400 block">Min: {item.min_stock_level}</span>
                       </td>
-                      <td className="py-3 px-4 text-right font-mono text-xs text-slate-600">
+                      <td className="py-3 px-4 text-right text-xs text-slate-600">
                         ${Number(item.purchase_price).toFixed(2)}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">
+                      <td className="py-3 px-4 text-right font-bold text-slate-900">
                         ${Number(item.valuation).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                     </tr>

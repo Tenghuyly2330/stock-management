@@ -603,7 +603,7 @@ export default function Products() {
                                 <div className="font-bold text-slate-900 leading-tight">
                                   {p.name}
                                 </div>
-                                <div className="text-xs font-mono text-indigo-600 mt-0.5">
+                                <div className="text-xs text-indigo-600 mt-0.5">
                                   {p.sku}
                                 </div>
                               </div>
@@ -641,7 +641,7 @@ export default function Products() {
                               ${parseFloat(p.selling_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </div>
                             {canManage && (
-                              <div className="text-[11px] font-mono text-slate-400">
+                              <div className="text-[11px] text-slate-400">
                                 Cost: ${parseFloat(p.purchase_price || 0).toFixed(2)}
                               </div>
                             )}
@@ -775,7 +775,7 @@ export default function Products() {
                           <h4 className="font-bold text-slate-900 text-xs truncate">
                             {item.product.name}
                           </h4>
-                          <div className="text-[11px] font-mono text-slate-500">
+                          <div className="text-[11px] text-slate-500">
                             ${parseFloat(item.product.selling_price).toFixed(2)}/ea
                           </div>
                         </div>
@@ -788,7 +788,7 @@ export default function Products() {
                           >
                             <Minus className="w-3 h-3" />
                           </button>
-                          <span className="w-6 text-center font-bold text-xs font-mono text-slate-900">
+                          <span className="w-6 text-center font-bold text-xs text-slate-900">
                             {item.quantity}
                           </span>
                           <button
@@ -833,7 +833,7 @@ export default function Products() {
                   </div>
                   <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
                     <span className="text-sm font-bold text-slate-900">Grand Total:</span>
-                    <span className="text-xl font-bold font-mono text-indigo-700">
+                    <span className="text-xl font-bold text-indigo-700">
                       ${cartGrandTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </div>
@@ -920,7 +920,7 @@ export default function Products() {
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2.5 text-xs">
               <div className="flex items-center justify-between pb-2 border-b border-slate-200">
                 <span className="text-slate-500">Customer (Phone/Name):</span>
-                <span className="font-bold text-slate-900 font-mono text-sm">
+                <span className="font-bold text-slate-900 text-sm">
                   {checkoutSuccess.customer || checkoutSuccess.partyIdentifier}
                 </span>
               </div>
@@ -988,7 +988,7 @@ export default function Products() {
                   placeholder="e.g. 10"
                   value={restockQty}
                   onChange={(e) => setRestockQty(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
 
@@ -1018,7 +1018,7 @@ export default function Products() {
                   placeholder="Unit purchase cost"
                   value={restockCost}
                   onChange={(e) => setRestockCost(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
 
@@ -1139,7 +1139,7 @@ export default function Products() {
                   placeholder="e.g. MCH-TRC-75HP"
                   value={formData.sku}
                   onChange={(e) => setFormData({ ...formData, sku: e.target.value.toUpperCase() })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
 
@@ -1155,7 +1155,7 @@ export default function Products() {
                     placeholder="e.g. 10 units"
                     value={formData.initialStock}
                     onChange={(e) => setFormData({ ...formData, initialStock: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   <span className="text-[10px] text-slate-400 mt-0.5 block">
                     Added to Base Warehouse and automatically recorded as an ADD entry in History.
@@ -1175,7 +1175,7 @@ export default function Products() {
                     placeholder="22500.00"
                     value={formData.purchasePrice}
                     onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
                 <div>
@@ -1189,7 +1189,7 @@ export default function Products() {
                     placeholder="29990.00"
                     value={formData.sellingPrice}
                     onChange={(e) => setFormData({ ...formData, sellingPrice: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
               </div>

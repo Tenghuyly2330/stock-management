@@ -34,7 +34,6 @@ export default function Warehouses() {
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
 
-  // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingWarehouse, setEditingWarehouse] = useState(null);
@@ -46,12 +45,10 @@ export default function Warehouses() {
     is_active: true,
   });
 
-  // View Warehouse Inventory Modal
   const [selectedWarehouse, setSelectedWarehouse] = useState(null);
   const [inventoryModalOpen, setInventoryModalOpen] = useState(false);
   const [loadingInventory, setLoadingInventory] = useState(false);
 
-  // Fetch warehouses
   const fetchWarehouses = async () => {
     try {
       setLoading(true);
@@ -76,7 +73,6 @@ export default function Warehouses() {
     return () => clearTimeout(timer);
   }, [search, statusFilter]);
 
-  // Open Create/Edit modal
   const handleOpenModal = (wh = null) => {
     setError(null);
     if (wh) {
@@ -131,7 +127,6 @@ export default function Warehouses() {
     }
   };
 
-  // View warehouse inventory breakdown
   const handleViewInventory = async (wh) => {
     try {
       setSelectedWarehouse(wh);
@@ -171,7 +166,6 @@ export default function Warehouses() {
     }
   };
 
-  // Calculate high-level stats
   const totalWarehouses = warehouses.length;
   const activeWarehouses = warehouses.filter((w) => w.is_active).length;
   const totalStockUnits = warehouses.reduce((sum, w) => sum + (parseInt(w.total_stock_units, 10) || 0), 0);
@@ -179,7 +173,6 @@ export default function Warehouses() {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner / Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
@@ -201,7 +194,6 @@ export default function Warehouses() {
         )}
       </div>
 
-      {/* Notifications */}
       {successMsg && (
         <div className="flex items-center gap-2 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-sm">
           <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
@@ -215,7 +207,6 @@ export default function Warehouses() {
         </div>
       )}
 
-      {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
@@ -260,7 +251,6 @@ export default function Warehouses() {
         </div>
       </div>
 
-      {/* Filter & Search Bar */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row gap-3 items-center justify-between">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -286,7 +276,6 @@ export default function Warehouses() {
         </div>
       </div>
 
-      {/* Warehouses Grid */}
       {loading ? (
         <div className="p-12 text-center text-slate-500 bg-white rounded-xl border border-slate-200">
           <div className="inline-block animate-spin w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full mb-2"></div>
@@ -310,10 +299,9 @@ export default function Warehouses() {
               }`}
             >
               <div className="p-5">
-                {/* Header: Name + Badge */}
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div>
-                    <span className="inline-block px-2.5 py-0.5 text-xs font-mono font-bold bg-indigo-50 text-indigo-700 rounded-md border border-indigo-100 mb-1.5">
+                    <span className="inline-block px-2.5 py-0.5 text-xs font-bold bg-indigo-50 text-indigo-700 rounded-md border border-indigo-100 mb-1.5">
                       {wh.code}
                     </span>
                     <h3 className="text-lg font-bold text-slate-900 tracking-tight leading-tight">{wh.name}</h3>
@@ -339,7 +327,6 @@ export default function Warehouses() {
                   </div>
                 </div>
 
-                {/* Metric Badges */}
                 <div className="grid grid-cols-3 gap-2 mt-5 pt-4 border-t border-slate-100 text-center">
                   <div className="bg-slate-50 rounded-lg p-2">
                     <p className="text-[10px] uppercase font-bold text-slate-400">Products</p>
@@ -358,7 +345,6 @@ export default function Warehouses() {
                 </div>
               </div>
 
-              {/* Action Bar */}
               <div className="bg-slate-50 px-5 py-3 border-t border-slate-100 flex items-center justify-between">
                 <button
                   onClick={() => handleViewInventory(wh)}
@@ -394,7 +380,6 @@ export default function Warehouses() {
         </div>
       )}
 
-      {/* Create / Edit Warehouse Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-md w-full shadow-xl overflow-hidden border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
@@ -432,7 +417,7 @@ export default function Warehouses() {
                   placeholder="e.g. W-WEST or W-SEA"
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm uppercase focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
                 <p className="text-[11px] text-slate-400 mt-1">Unique facility identifier used in logistics ledgers</p>
               </div>
@@ -497,15 +482,13 @@ export default function Warehouses() {
         </div>
       )}
 
-      {/* Warehouse Inventory Breakdown Modal */}
       {inventoryModalOpen && selectedWarehouse && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[85vh] shadow-xl flex flex-col overflow-hidden border border-slate-100">
-            {/* Modal Header */}
             <div className="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 text-xs font-mono font-bold bg-indigo-100 text-indigo-800 rounded">
+                  <span className="px-2 py-0.5 text-xs font-bold bg-indigo-100 text-indigo-800 rounded">
                     {selectedWarehouse.code}
                   </span>
                   <h3 className="text-lg font-bold text-slate-900">{selectedWarehouse.name}</h3>
@@ -520,7 +503,6 @@ export default function Warehouses() {
               </button>
             </div>
 
-            {/* Modal Body */}
             <div className="p-6 overflow-y-auto flex-1">
               {loadingInventory ? (
                 <div className="py-12 text-center text-slate-500">
@@ -550,7 +532,7 @@ export default function Warehouses() {
                         <tr key={item.inventory_id} className="hover:bg-slate-50">
                           <td className="py-3 pl-2">
                             <div className="font-semibold text-slate-900">{item.product_name}</div>
-                            <div className="text-xs text-slate-400 font-mono">SKU: {item.sku}</div>
+                            <div className="text-xs text-slate-400">SKU: {item.sku}</div>
                           </td>
                           <td className="py-3 text-slate-600 text-xs">{item.category_name}</td>
                           <td className="py-3 text-right">
@@ -565,8 +547,8 @@ export default function Warehouses() {
                               <span className="block text-[10px] text-amber-600 font-medium">Low Stock</span>
                             )}
                           </td>
-                          <td className="py-3 text-right text-slate-600 font-mono">${parseFloat(item.purchase_price).toFixed(2)}</td>
-                          <td className="py-3 text-right font-bold font-mono text-emerald-700">
+                          <td className="py-3 text-right text-slate-600">${parseFloat(item.purchase_price).toFixed(2)}</td>
+                          <td className="py-3 text-right font-bold text-emerald-700">
                             ${parseFloat(item.valuation).toFixed(2)}
                           </td>
                         </tr>
@@ -577,14 +559,13 @@ export default function Warehouses() {
               )}
             </div>
 
-            {/* Modal Footer */}
             <div className="px-6 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-500">
               <span>
                 Total Units Stored: <strong className="text-slate-900">{selectedWarehouse.total_stock_units}</strong>
               </span>
               <span>
                 Total Inventory Valuation:{' '}
-                <strong className="text-emerald-700 font-mono">
+                <strong className="text-emerald-700">
                   ${parseFloat(selectedWarehouse.total_inventory_valuation || 0).toLocaleString()}
                 </strong>
               </span>

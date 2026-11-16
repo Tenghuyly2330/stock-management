@@ -14,3 +14,4 @@ router.get('/', getSettings);
 router.put('/', authorize('admin', 'manager'), updateSettings);
 
 module.exports = router;
+

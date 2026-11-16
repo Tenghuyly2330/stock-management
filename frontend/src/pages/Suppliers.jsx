@@ -566,14 +566,14 @@ export default function Suppliers() {
                     <tbody className="divide-y divide-slate-100">
                       {selectedSupplier.purchase_orders.map((po) => (
                         <tr key={po.id} className="hover:bg-slate-50">
-                          <td className="py-3 font-mono font-semibold text-slate-900">{po.po_number}</td>
+                          <td className="py-3 font-semibold text-slate-900">{po.po_number}</td>
                           <td className="py-3 text-slate-600">{po.warehouse_name || '—'}</td>
                           <td className="py-3">
                             <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-slate-100 text-slate-700">
                               {po.status}
                             </span>
                           </td>
-                          <td className="py-3 text-right font-mono font-bold text-slate-900">
+                          <td className="py-3 text-right font-bold text-slate-900">
                             ${parseFloat(po.total_amount).toFixed(2)}
                           </td>
                         </tr>
@@ -588,7 +588,7 @@ export default function Suppliers() {
               <span>Total Orders: <strong>{selectedSupplier.total_purchase_orders || 0}</strong></span>
               <span>
                 Total Procurement Spend:{' '}
-                <strong className="text-emerald-700 font-mono">
+                <strong className="text-emerald-700">
                   ${parseFloat(selectedSupplier.total_purchased_value || 0).toFixed(2)}
                 </strong>
               </span>

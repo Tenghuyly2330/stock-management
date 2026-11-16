@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../api/axios';
 import {
@@ -31,16 +32,13 @@ export default function History() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Filters
-  const [activeTab, setActiveTab] = useState('ALL'); // 'ALL' | 'ADD' | 'BUY'
+  const [activeTab, setActiveTab] = useState('ALL');
   const [search, setSearch] = useState(searchParams.get('search') || '');
 
-  // Synchronize with URL query parameter
   useEffect(() => {
     setSearch(searchParams.get('search') || '');
   }, [searchParams]);
 
-  // Fetch History (Automated Log)
   const fetchHistory = useCallback(async () => {
     try {
       setLoading(true);
@@ -51,7 +49,6 @@ export default function History() {
 
       const res = await api.get('/history', { params });
 
-      // Robust extraction of records array from API response
       const records = Array.isArray(res.data)
         ? res.data
         : Array.isArray(res.data?.data)
@@ -62,7 +59,6 @@ export default function History() {
 
       setHistoryList(records);
 
-      // Robust extraction of summary statistics
       const statsObj = res.stats || res.data?.stats || null;
       if (statsObj) {
         setStats(statsObj);
@@ -103,7 +99,6 @@ export default function History() {
         </div>
       </div>
 
-      {/* Error Banner */}
       {error && (
         <div className="flex items-center gap-2 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-sm">
           <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
@@ -118,7 +113,6 @@ export default function History() {
           icon={ShoppingCart}
           color="blue"
           trend={{ isPositive: true, text: 'Sales' }}
-          subtitle="Units purchased by customers"
         />
         <StatusCard
           title="Total Sales Revenue"
@@ -126,7 +120,6 @@ export default function History() {
           icon={DollarSign}
           color="emerald"
           trend={{ isPositive: true, text: 'Revenue' }}
-          subtitle="Customer purchase volume"
         />
         <StatusCard
           title="Owner Added (Restocks)"
@@ -134,7 +127,6 @@ export default function History() {
           icon={Boxes}
           color="purple"
           trend={{ isPositive: true, text: 'Restocked' }}
-          subtitle="Units added to base stock"
         />
         <StatusCard
           title="Procurement Spend"
@@ -142,7 +134,7 @@ export default function History() {
           icon={DollarSign}
           color="amber"
           trend={{ isPositive: false, text: 'Cost Basis' }}
-          subtitle="Total spent procuring stock"
+          // subtitle="Total spent procuring stock"
         />
       </div>
 
@@ -167,7 +159,7 @@ export default function History() {
             }`}
           >
             <ShoppingCart className="w-3.5 h-3.5" />
-            <span>Customer Purchases (Bought)</span>
+            <span>Bought</span>
           </button>
           <button
             onClick={() => setActiveTab('ADD')}
@@ -178,7 +170,7 @@ export default function History() {
             }`}
           >
             <Boxes className="w-3.5 h-3.5" />
-            <span>Owner Restocks (Added)</span>
+            <span>Restocks</span>
           </button>
         </div>
 
@@ -238,7 +230,6 @@ export default function History() {
 
                   return (
                     <tr key={row.id} className="hover:bg-slate-50/70 transition-colors">
-                      {/* Date & Time */}
                       <td className="py-3 px-4 text-xs text-slate-500 whitespace-nowrap">
                         <div className="font-medium text-slate-800">
                           {new Date(row.created_at).toLocaleDateString()}
@@ -252,28 +243,28 @@ export default function History() {
                         {isBuy ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
                             <ArrowUpRight className="w-3.5 h-3.5" />
-                            BOUGHT
+                            Bought
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                             <ArrowDownLeft className="w-3.5 h-3.5" />
-                            ADDED
+                            Added
                           </span>
                         )}
                       </td>
 
                       <td className="py-3 px-4">
                         <div className="font-semibold text-slate-900 leading-tight">{row.product_name}</div>
-                        <div className="text-xs font-mono text-indigo-600 mt-0.5">{row.product_sku}</div>
+                        <div className="text-xs text-indigo-600 mt-0.5">{row.product_sku}</div>
                       </td>
 
                       <td className="py-3 px-4 text-right whitespace-nowrap">
                         <span
-                          className={`font-mono font-bold text-sm ${
+                          className={`font-bold text-sm ${
                             isBuy ? 'text-indigo-700' : 'text-emerald-700'
                           }`}
                         >
-                          {isBuy ? `-${row.quantity}` : `+${row.quantity}`} units
+                          {isBuy ? `-${row.quantity}` : `+${row.quantity}`}
                         </span>
                       </td>
 
@@ -287,7 +278,7 @@ export default function History() {
                               </div>
                               <button
                                 onClick={() => setSearch(row.customer_phone)}
-                                className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full text-[11px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 cursor-pointer transition-colors"
+                                className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full text-[11px]  font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 cursor-pointer transition-colors"
                                 title="Click to filter by this phone number"
                               >
                                 <Phone className="w-2.5 h-2.5" />
@@ -298,7 +289,7 @@ export default function History() {
                             <div>
                               <button
                                 onClick={() => setSearch(row.customer_phone)}
-                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 cursor-pointer transition-colors"
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs  font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 cursor-pointer transition-colors"
                                 title="Click to filter by this customer phone"
                               >
                                 <Phone className="w-3 h-3 text-indigo-600" />
@@ -331,12 +322,12 @@ export default function History() {
                       </td>
 
                       <td className="py-3 px-4 text-right whitespace-nowrap">
-                        <span className="font-mono font-bold text-slate-900 text-sm">
+                        <span className=" font-bold text-slate-900 text-sm">
                           ${parseFloat(row.total_amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                         {row.unit_price && (
-                          <span className="text-[10px] text-slate-400 block font-mono">
-                            @ ${parseFloat(row.unit_price).toFixed(2)}/ea
+                          <span className="text-[10px] text-slate-400 block ">
+                            ${parseFloat(row.unit_price).toFixed(2)}/ea
                           </span>
                         )}
                       </td>
@@ -346,7 +337,7 @@ export default function History() {
                           <User className="w-3.5 h-3.5 text-slate-400" />
                           <span className="font-medium">{row.user_name || 'System Admin'}</span>
                         </div>
-                        <span className="text-[10px] text-slate-400">{row.user_email || ''}</span>
+                        {/* <span className="text-[10px] text-slate-400">{row.user_email || ''}</span> */}
                       </td>
                     </tr>
                   );

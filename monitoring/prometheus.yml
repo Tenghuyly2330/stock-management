@@ -3,12 +3,10 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  # Scrape Prometheus itself
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
 
-  # Scrape Stock Management Node.js Express Backend
   - job_name: 'stock-backend'
     scrape_interval: 5s
     metrics_path: '/metrics'

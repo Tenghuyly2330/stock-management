@@ -1,12 +1,11 @@
-name: Stock & Inventory Management CI/CD Pipeline
+name: StockSync CI/CD Pipeline (Render & Vercel)
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ master, main ]
+    branches: [ main, master ]
 
-# Cancel in-progress runs for the same branch/PR to optimize pipeline resources
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -17,9 +16,9 @@ env:
   FRONTEND_IMAGE_NAME: ${{ github.repository }}/frontend
 
 jobs:
-  # ============================================================================
-  # Stage 1: Continuous Integration - Lint & Automated Tests
-  # ============================================================================
+  # =========================================================================
+  # 1. TEST & LINT (Runs on all Pull Requests and Pushes)
+  # =========================================================================
   test-and-lint:
     name: Lint & Automated Tests
     runs-on: ubuntu-latest
@@ -52,9 +51,42 @@ jobs:
       - name: 7. Execute Frontend Production Build Check
         run: npm --prefix frontend run build
 
-  # ============================================================================
-  # Stage 2: Docker Build & Push to Container Registry
-  # ============================================================================
+  # =========================================================================
+  # 2. CLOUD DEPLOY (Render Backend & Vercel Frontend)
+  # =========================================================================
+  deploy-cloud:
+    name: Deploy to Render & Vercel
+    needs: test-and-lint
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+
+    steps:
+      - name: 1. Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: 2. Deploy Backend to Render (via Deploy Hook)
+        env:
+          RENDER_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -n "$RENDER_HOOK" ]; then
+            echo "🚀 Dispatching Render deployment webhook..."
+            curl -fsS -X POST "$RENDER_HOOK"
+            echo "✅ Render backend deployment trigger sent successfully!"
+          else
+            echo "ℹ️ RENDER_DEPLOY_HOOK_URL secret not set. Render will deploy automatically via its connected GitHub repository."
+          fi
+
+      - name: 3. Verify Vercel SPA Routing Configuration
+        run: |
+          echo "🚀 Vercel automatically deploys the frontend upon git push."
+          if [ -f "frontend/vercel.json" ]; then
+            echo "✅ frontend/vercel.json found and verified:"
+            cat frontend/vercel.json
+          fi
+
+  # =========================================================================
+  # 3. DOCKER BUILD & CONTAINER REGISTRY (Optional / Backup)
+  # =========================================================================
   build-and-push-docker:
     name: Build & Push Docker Images
     needs: test-and-lint
@@ -119,36 +151,3 @@ jobs:
           labels: ${{ steps.meta-frontend.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-  # ============================================================================
-  # Stage 3: Continuous Deployment (CD) - Kubernetes Rollout Verification
-  # ============================================================================
-  deploy:
-    name: Deploy & Kubernetes Rollout
-    needs: build-and-push-docker
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
-
-    steps:
-      - name: 1. Checkout Manifests
-        uses: actions/checkout@v4
-
-      - name: 2. Set Up Kubectl
-        uses: azure/setup-kubectl@v4
-        with:
-          version: 'v1.30.0'
-
-      - name: 3. Validate Kubernetes Manifests Syntax (Dry Run)
-        run: |
-          echo "Validating Kubernetes resource specifications..."
-          kubectl apply --dry-run=client -k k8s/
-
-      - name: 4. Deployment Rollout Note
-        run: |
-          echo "======================================================================"
-          echo " Continuous Deployment Verified!"
-          echo " In production environments with KUBECONFIG secret configured:"
-          echo " kubectl set image deployment/backend-deployment backend=${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:sha-${{ github.sha }} -n stock-system"
-          echo " kubectl rollout status deployment/backend-deployment -n stock-system --timeout=120s"
-          echo "======================================================================"
-

@@ -511,14 +511,14 @@ export default function Inventory() {
                               </div>
                               <div>
                                 <div className="font-semibold text-slate-900 leading-tight">{row.product_name}</div>
-                                <div className="text-xs text-slate-400 font-mono mt-0.5">SKU: {row.sku}</div>
+                                <div className="text-xs text-slate-400 mt-0.5">SKU: {row.sku}</div>
                               </div>
                             </div>
                           </td>
                           <td className="py-3 px-4 text-xs text-slate-600">{row.category_name}</td>
                           <td className="py-3 px-4">
                             <div className="font-medium text-slate-800 text-xs">{row.warehouse_name}</div>
-                            <span className="inline-block px-1.5 py-0.2 text-[10px] font-mono font-bold bg-indigo-50 text-indigo-700 rounded">
+                            <span className="inline-block px-1.5 py-0.2 text-[10px] font-bold bg-indigo-50 text-indigo-700 rounded">
                               {row.warehouse_code}
                             </span>
                           </td>
@@ -542,17 +542,17 @@ export default function Inventory() {
                           </td>
                           <td className="py-3 px-4 text-right">
                             <span
-                              className={`text-base font-bold font-mono ${
+                              className={`text-base font-bold ${
                                 isOutOfStock ? 'text-rose-600' : isLowStock ? 'text-amber-600' : 'text-slate-900'
                               }`}
                             >
                               {row.quantity}
                             </span>
                           </td>
-                          <td className="py-3 px-4 text-right text-xs text-slate-500 font-mono">
+                          <td className="py-3 px-4 text-right text-xs text-slate-500">
                             Min: {row.min_stock_level}
                           </td>
-                          <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">
+                          <td className="py-3 px-4 text-right font-bold text-slate-900">
                             ${parseFloat(row.valuation || 0).toFixed(2)}
                           </td>
                           <td className="py-3 px-4 text-right">
@@ -723,7 +723,7 @@ export default function Inventory() {
                           </td>
                           <td className="py-3 px-4">
                             <div className="font-semibold text-slate-900 text-xs">{m.product_name}</div>
-                            <div className="text-[11px] text-slate-400 font-mono">SKU: {m.product_sku}</div>
+                            <div className="text-[11px] text-slate-400">SKU: {m.product_sku}</div>
                           </td>
                           <td className="py-3 px-4 text-xs">
                             {isTransfer ? (
@@ -1035,7 +1035,7 @@ export default function Inventory() {
                       placeholder="e.g. PO-8921 or SO-102"
                       value={formRefId}
                       onChange={(e) => setFormRefId(e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
                 </div>

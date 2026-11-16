@@ -1,4 +1,4 @@
-# Farm Machinery & Industrial Metals - Stock & Inventory Management System
+# HouseStock & Inventory Management System
 
 A production-grade, enterprise Stock & Inventory Management Web Application built with **React 19**, **Tailwind CSS v4**, **Node.js (Express 5)**, **PostgreSQL**, **Docker**, **Nginx**, **GitHub Actions CI/CD**, **Kubernetes**, and **Prometheus & Grafana**.
 
@@ -222,23 +222,3 @@ kubectl get pods -n stock-system
 
 ---
 
-## 10. Senior Full-Stack & DevOps Interview Guide
-
-### Q1: How do you guarantee inventory consistency under concurrent sales and restocks?
-**Answer**: We implement PostgreSQL database transactions (`BEGIN ... COMMIT`) paired with row-level locks (`SELECT quantity FROM inventory WHERE ... FOR UPDATE`). This serializes concurrent checkout requests on the same SKU, preventing race conditions (time-of-check to time-of-use bugs) and guaranteeing that stock quantities can never drop below zero due to check constraints (`CHECK quantity >= 0`).
-
-### Q2: Why use a multi-stage Dockerfile for both Node.js and React?
-**Answer**: 
-- In the **Frontend**, the Node.js build tools, Vite compiler, and `node_modules` (hundreds of megabytes) are discarded after `npm run build`. The final image contains only lightweight `nginx:alpine` and static HTML/JS/CSS assets (~25MB), drastically reducing attack surface and container pull latency.
-- In the **Backend**, development dependencies (`nodemon`, test runners) are purged via `npm ci --omit=dev`. The image runs as an unprivileged user (`USER nodejs`, UID 1001) instead of `root`, preventing container escape vulnerabilities.
-
-### Q3: How does Nginx reverse proxy eliminate CORS and streamline deployment?
-**Answer**: By placing Nginx at the ingress on port 80, browser clients make requests to relative URLs (`/api/auth/login` and `/api/history`). Nginx proxies `/api/*` to the Node backend and `/` to the React SPA. Because both UI and API share the identical origin (scheme, host, port), browser Same-Origin Policy (SOP) is satisfied without CORS overhead, and SSL certificates are terminated in one centralized layer.
-
-### Q4: How does Prometheus scrape metrics without leaking sensitive user data?
-**Answer**: The backend exposes standard Prometheus exposition format on `/metrics` using `prom-client`. Route parameters are normalized (e.g. `/api/products/15` becomes `/api/products/:id`) to prevent high cardinality metric explosion. The endpoint records execution durations, status code distributions, and process memory, with zero PII or payload data stored.
-
----
-
-## 11. License
-MIT License. Created for enterprise inventory control and modern DevOps training.

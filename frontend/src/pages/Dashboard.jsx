@@ -100,7 +100,7 @@ export default function Dashboard() {
           icon={Package}
           color="blue"
           trend={{ isPositive: true, text: 'Machinery & Metals' }}
-          subtitle="Catalog Product Records"
+          // subtitle="Catalog Product Records"
         />
         <StatusCard
           title="Units in Base Warehouse"
@@ -108,7 +108,6 @@ export default function Dashboard() {
           icon={Boxes}
           color="emerald"
           trend={{ isPositive: true, text: 'BASE-01' }}
-          subtitle="Current stock on hand"
         />
         <StatusCard
           title="Inventory Valuation"
@@ -116,7 +115,6 @@ export default function Dashboard() {
           icon={DollarSign}
           color="purple"
           trend={{ isPositive: true, text: 'Cost Basis' }}
-          subtitle="Total stored inventory value"
         />
         <StatusCard
           title="Low Stock Warnings"
@@ -124,7 +122,6 @@ export default function Dashboard() {
           icon={AlertTriangle}
           color="rose"
           trend={{ isPositive: false, text: 'Needs Reorder' }}
-          subtitle="Below safety threshold"
         />
       </div>
 
@@ -137,7 +134,6 @@ export default function Dashboard() {
                   <History className="w-5 h-5 text-indigo-600" />
                   Recent Transactions (Who Bought & Added)
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">Latest sales and procurement movements</p>
               </div>
               <Link
                 to="/history"
@@ -181,13 +177,13 @@ export default function Dashboard() {
 
                       <div className="text-right">
                         <div
-                          className={`font-mono font-bold text-sm ${
+                          className={`font-bold text-sm ${
                             isBuy ? 'text-indigo-700' : 'text-emerald-700'
                           }`}
                         >
-                          {isBuy ? `-${row.quantity}` : `+${row.quantity}`} units
+                          {isBuy ? `-${row.quantity}` : `+${row.quantity}`}
                         </div>
-                        <div className="text-xs font-mono font-semibold text-slate-900">
+                        <div className="text-xs font-semibold text-slate-900">
                           ${parseFloat(row.total_amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
                       </div>
@@ -218,20 +214,18 @@ export default function Dashboard() {
                 <Warehouse className="w-4 h-4 text-indigo-600" />
                 Base Warehouse (1 is Base)
               </h3>
-              <span className="font-mono text-[11px] font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-700">
+              <span className="text-[11px] font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-700">
                 BASE-01
               </span>
             </div>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Main Base Warehouse holds your primary stock for machinery and metal distribution.
-            </p>
+    
             <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
               <span className="text-slate-500">Stored Units:</span>
-              <strong className="text-slate-900 font-mono text-sm">{dashboardData.totalBaseUnits}</strong>
+              <strong className="text-slate-900 text-sm">{dashboardData.totalBaseUnits}</strong>
             </div>
             <div className="mt-2 flex items-center justify-between text-xs">
               <span className="text-slate-500">Valuation:</span>
-              <strong className="text-emerald-700 font-mono text-sm">
+              <strong className="text-emerald-700 text-sm">
                 ${parseFloat(dashboardData.totalValuation || 0).toLocaleString()}
               </strong>
             </div>
@@ -259,7 +253,7 @@ export default function Dashboard() {
               {dashboardData.categories.slice(0, 5).map((cat) => (
                 <div key={cat.id} className="flex items-center justify-between text-xs p-2 rounded-lg bg-slate-50">
                   <span className="font-medium text-slate-800">{cat.name}</span>
-                  <span className="text-slate-500 font-mono">{cat.product_count || 0} items</span>
+                  <span className="text-slate-500 ">{cat.product_count || 0} items</span>
                 </div>
               ))}
             </div>

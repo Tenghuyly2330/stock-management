@@ -1,7 +1,4 @@
 services:
-  # ----------------------------------------------------------------------------
-  # 1. PostgreSQL Database Service
-  # ----------------------------------------------------------------------------
   postgres:
     image: postgres:16-alpine
     container_name: stock-postgres
@@ -23,9 +20,7 @@ services:
     networks:
       - stock-network
 
-  # ----------------------------------------------------------------------------
-  # 2. Node.js Express Backend API
-  # ----------------------------------------------------------------------------
+
   backend:
     build:
       context: ./backend
@@ -57,9 +52,7 @@ services:
     networks:
       - stock-network
 
-  # ----------------------------------------------------------------------------
-  # 3. React Frontend SPA (Vite + Nginx)
-  # ----------------------------------------------------------------------------
+
   frontend:
     build:
       context: ./frontend
@@ -74,9 +67,6 @@ services:
     networks:
       - stock-network
 
-  # ----------------------------------------------------------------------------
-  # 4. Ingress Reverse Proxy (Nginx)
-  # ----------------------------------------------------------------------------
   nginx:
     image: nginx:1.27-alpine
     container_name: stock-nginx
@@ -91,9 +81,6 @@ services:
     networks:
       - stock-network
 
-  # ----------------------------------------------------------------------------
-  # 5. Prometheus Metrics Scraper (Optional Profile: monitoring)
-  # ----------------------------------------------------------------------------
   prometheus:
     image: prom/prometheus:latest
     container_name: stock-prometheus
@@ -112,9 +99,6 @@ services:
     networks:
       - stock-network
 
-  # ----------------------------------------------------------------------------
-  # 6. Grafana Metrics Dashboard (Optional Profile: monitoring)
-  # ----------------------------------------------------------------------------
   grafana:
     image: grafana/grafana:latest
     container_name: stock-grafana
@@ -134,9 +118,7 @@ services:
     networks:
       - stock-network
 
-# ------------------------------------------------------------------------------
-# Persistent Storage Volumes
-# ------------------------------------------------------------------------------
+
 volumes:
   postgres_data:
     driver: local
@@ -147,9 +129,6 @@ volumes:
   grafana_data:
     driver: local
 
-# ------------------------------------------------------------------------------
-# Isolated Bridge Network
-# ------------------------------------------------------------------------------
 networks:
   stock-network:
     driver: bridge
