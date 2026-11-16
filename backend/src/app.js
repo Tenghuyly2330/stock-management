@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const env = require('./config/env');
@@ -10,7 +11,9 @@ const apiRoutes = require('./routes');
 const app = express();
 
 // Security HTTP headers
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
 
 // CORS configuration
 app.use(
@@ -35,6 +38,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // HTTP Request logging
 app.use(requestLogger);
+
+// Serve uploaded media statically
+app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
 
 // Mount API routes
 app.use('/api', apiRoutes);

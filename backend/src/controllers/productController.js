@@ -1,5 +1,6 @@
 const { query } = require('../config/db');
 const { successResponse, errorResponse, paginatedResponse } = require('../utils/response');
+const { uploadImageBuffer, deleteImage, extractPublicIdFromUrl } = require('../config/cloudinary');
 
 /**
  * Generate unique enterprise SKU if not provided
@@ -32,8 +33,8 @@ const getProducts = async (req, res, next) => {
     const offset = (page - 1) * limit;
     const search = req.query.search ? req.query.search.trim().toLowerCase() : '';
     const categoryId = req.query.category_id ? parseInt(req.query.category_id, 10) : null;
-    const stockStatus = req.query.stock_status; // 'in_stock' | 'low_stock' | 'out_of_stock'
-    const status = req.query.status; // 'active' | 'inactive'
+    const stockStatus = req.query.stock_status;
+    const status = req.query.status;
     const sortBy = req.query.sort_by || 'created_at';
     const sortDir = req.query.sort_dir?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
 
@@ -60,7 +61,6 @@ const getProducts = async (req, res, next) => {
 
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
-    // Having clause for aggregated stock filters
     let havingClause = '';
     if (stockStatus === 'out_of_stock') {
       havingClause = 'HAVING COALESCE(SUM(inv.quantity), 0) = 0';
@@ -70,7 +70,6 @@ const getProducts = async (req, res, next) => {
       havingClause = 'HAVING COALESCE(SUM(inv.quantity), 0) > p.min_stock_level';
     }
 
-    // Determine safe order column
     const sortColumnMap = {
       name: 'p.name',
       price: 'p.selling_price',
@@ -79,7 +78,6 @@ const getProducts = async (req, res, next) => {
     };
     const orderColumn = sortColumnMap[sortBy] || 'p.created_at';
 
-    // Subquery count for pagination
     const countSql = `
       SELECT COUNT(*)::int as total FROM (
         SELECT p.id
@@ -93,11 +91,10 @@ const getProducts = async (req, res, next) => {
     const countRes = await query(countSql, params);
     const total = countRes.rows[0].total;
 
-    // Data query
     const dataParams = [...params, limit, offset];
     const dataSql = `
       SELECT 
-        p.id, p.name, p.sku, p.barcode, p.description, p.image_url,
+        p.id, p.name, p.sku, p.barcode, p.description, p.image_url, p.image_public_id,
         p.purchase_price, p.selling_price, p.min_stock_level, p.is_active,
         p.created_at, p.updated_at, p.category_id,
         c.name as category_name,
@@ -166,7 +163,6 @@ const getProductById = async (req, res, next) => {
       return errorResponse(res, { statusCode: 404, message: 'Product not found.' });
     }
 
-    // Warehouse stock breakdown
     const whSql = `
       SELECT 
         w.id as warehouse_id, w.name as warehouse_name, w.code as warehouse_code,
@@ -192,7 +188,34 @@ const getProductById = async (req, res, next) => {
 };
 
 /**
- * @desc    Create a new product with auto-generated SKU/Barcode if blank
+ * @desc    Upload an image file directly to Cloudinary
+ * @route   POST /api/products/upload-image
+ * @access  Private (Admin, Manager)
+ */
+const uploadProductImage = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return errorResponse(res, { statusCode: 400, message: 'Please select an image file to upload.' });
+    }
+
+    const result = await uploadImageBuffer(req.file.buffer);
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: 'Image uploaded to Cloudinary successfully',
+      data: {
+        imageUrl: result.url,
+        imagePublicId: result.publicId,
+        bytes: result.bytes,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    Create a new product (supports image file upload or external link)
  * @route   POST /api/products
  * @access  Private (Admin, Manager)
  */
@@ -205,6 +228,7 @@ const createProduct = async (req, res, next) => {
       barcode,
       description,
       imageUrl,
+      imagePublicId,
       purchasePrice,
       sellingPrice,
       minStockLevel,
@@ -216,6 +240,13 @@ const createProduct = async (req, res, next) => {
 
     if (!categoryId) {
       return errorResponse(res, { statusCode: 400, message: 'Category selection is required.' });
+    }
+
+    // If an image file was attached in multipart/form-data
+    if (req.file) {
+      const uploadResult = await uploadImageBuffer(req.file.buffer);
+      imageUrl = uploadResult.url;
+      imagePublicId = uploadResult.publicId;
     }
 
     // Verify category exists
@@ -252,9 +283,9 @@ const createProduct = async (req, res, next) => {
 
     const insertSql = `
       INSERT INTO products (
-        name, category_id, sku, barcode, description, image_url,
+        name, category_id, sku, barcode, description, image_url, image_public_id,
         purchase_price, selling_price, min_stock_level, is_active
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, TRUE)
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, TRUE)
       RETURNING *
     `;
 
@@ -265,6 +296,7 @@ const createProduct = async (req, res, next) => {
       barcode,
       description ? description.trim() : null,
       imageUrl ? imageUrl.trim() : null,
+      imagePublicId ? imagePublicId.trim() : null,
       pPrice,
       sPrice,
       minStock,
@@ -281,20 +313,21 @@ const createProduct = async (req, res, next) => {
 };
 
 /**
- * @desc    Update existing product
+ * @desc    Update existing product & delete old Cloudinary image if replaced
  * @route   PUT /api/products/:id
  * @access  Private (Admin, Manager)
  */
 const updateProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const {
+    let {
       name,
       categoryId,
       sku,
       barcode,
       description,
       imageUrl,
+      imagePublicId,
       purchasePrice,
       sellingPrice,
       minStockLevel,
@@ -304,6 +337,30 @@ const updateProduct = async (req, res, next) => {
     const existingRes = await query('SELECT * FROM products WHERE id = $1', [id]);
     if (existingRes.rowCount === 0) {
       return errorResponse(res, { statusCode: 404, message: 'Product not found.' });
+    }
+
+    const currentProduct = existingRes.rows[0];
+
+    // Handle new file upload from multipart
+    if (req.file) {
+      const uploadResult = await uploadImageBuffer(req.file.buffer);
+      imageUrl = uploadResult.url;
+      imagePublicId = uploadResult.publicId;
+
+      // Delete previous Cloudinary image if present
+      const oldPublicId = currentProduct.image_public_id || extractPublicIdFromUrl(currentProduct.image_url);
+      if (oldPublicId) {
+        await deleteImage(oldPublicId);
+      }
+    } else if (imageUrl !== undefined && imageUrl !== currentProduct.image_url) {
+      // User changed to a new URL or cleared image URL
+      const oldPublicId = currentProduct.image_public_id || extractPublicIdFromUrl(currentProduct.image_url);
+      if (oldPublicId && oldPublicId !== imagePublicId) {
+        await deleteImage(oldPublicId);
+      }
+      if (!imageUrl) {
+        imagePublicId = null;
+      }
     }
 
     if (sku) {
@@ -334,6 +391,7 @@ const updateProduct = async (req, res, next) => {
       barcode !== undefined ? barcode : null,
       description !== undefined ? description : null,
       imageUrl !== undefined ? imageUrl : null,
+      imagePublicId !== undefined ? imagePublicId : null,
       purchasePrice !== undefined ? parseFloat(purchasePrice) : null,
       sellingPrice !== undefined ? parseFloat(sellingPrice) : null,
       minStockLevel !== undefined ? parseInt(minStockLevel, 10) : null,
@@ -350,11 +408,12 @@ const updateProduct = async (req, res, next) => {
         barcode = COALESCE($4, barcode),
         description = COALESCE($5, description),
         image_url = COALESCE($6, image_url),
-        purchase_price = COALESCE($7, purchase_price),
-        selling_price = COALESCE($8, selling_price),
-        min_stock_level = COALESCE($9, min_stock_level),
-        is_active = COALESCE($10, is_active)
-      WHERE id = $11
+        image_public_id = COALESCE($7, image_public_id),
+        purchase_price = COALESCE($8, purchase_price),
+        selling_price = COALESCE($9, selling_price),
+        min_stock_level = COALESCE($10, min_stock_level),
+        is_active = COALESCE($11, is_active)
+      WHERE id = $12
       RETURNING *
     `;
 
@@ -371,7 +430,7 @@ const updateProduct = async (req, res, next) => {
 };
 
 /**
- * @desc    Delete or soft-deactivate product
+ * @desc    Delete or soft-deactivate product & delete Cloudinary image
  * @route   DELETE /api/products/:id
  * @access  Private (Admin only)
  */
@@ -379,9 +438,17 @@ const deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const prodRes = await query('SELECT id, name FROM products WHERE id = $1', [id]);
+    const prodRes = await query('SELECT id, name, image_url, image_public_id FROM products WHERE id = $1', [id]);
     if (prodRes.rowCount === 0) {
       return errorResponse(res, { statusCode: 404, message: 'Product not found.' });
+    }
+
+    const product = prodRes.rows[0];
+
+    // Delete image asset from Cloudinary
+    const cloudPublicId = product.image_public_id || extractPublicIdFromUrl(product.image_url);
+    if (cloudPublicId) {
+      await deleteImage(cloudPublicId);
     }
 
     // Check if referenced in stock movements or orders
@@ -396,21 +463,19 @@ const deleteProduct = async (req, res, next) => {
     const hasHistory = movementsCheck.rows[0].count > 0 || ordersCheck.rows[0].count > 0;
 
     if (hasHistory) {
-      // Soft deactivate to preserve historical ledger records
-      await query('UPDATE products SET is_active = FALSE WHERE id = $1', [id]);
+      await query('UPDATE products SET is_active = FALSE, image_url = NULL, image_public_id = NULL WHERE id = $1', [id]);
       return successResponse(res, {
         statusCode: 200,
-        message: `Product '${prodRes.rows[0].name}' has active inventory or order history. It has been deactivated rather than deleted to protect audit trails.`,
+        message: `Product '${product.name}' has historical inventory records. It has been deactivated and its image removed from Cloudinary.`,
       });
     }
 
-    // If completely clean of history, clean inventory link and delete row
     await query('DELETE FROM inventory WHERE product_id = $1', [id]);
     await query('DELETE FROM products WHERE id = $1', [id]);
 
     return successResponse(res, {
       statusCode: 200,
-      message: `Product '${prodRes.rows[0].name}' permanently removed.`,
+      message: `Product '${product.name}' and its Cloudinary media permanently deleted.`,
     });
   } catch (error) {
     next(error);
@@ -420,6 +485,7 @@ const deleteProduct = async (req, res, next) => {
 module.exports = {
   getProducts,
   getProductById,
+  uploadProductImage,
   createProduct,
   updateProduct,
   deleteProduct,

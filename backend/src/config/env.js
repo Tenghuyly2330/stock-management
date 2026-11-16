@@ -22,7 +22,12 @@ const env = {
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '24h',
   isProduction: process.env.NODE_ENV === 'production',
   isDevelopment: process.env.NODE_ENV !== 'production',
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'ds7w2aznz',
+    apiKey: process.env.CLOUDINARY_API_KEY || '263134127278318',
+    apiSecret: process.env.CLOUDINARY_API_SECRET || 'dG-rWWvaktUUOhTFdOWDSjeyh28',
+    folder: process.env.CLOUDINARY_FOLDER || 'stock',
+  },
 };
 
 module.exports = env;
-

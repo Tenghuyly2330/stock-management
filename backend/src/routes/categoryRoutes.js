@@ -25,3 +25,4 @@ router.put('/:id', authorize('admin', 'manager'), updateCategory);
 router.delete('/:id', authorize('admin'), deleteCategory);
 
 module.exports = router;
+
