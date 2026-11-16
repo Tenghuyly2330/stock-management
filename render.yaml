@@ -1,7 +1,7 @@
 services:
   - type: web
     name: stock-management-backend
-    env: node
+    runtime: node
     plan: free
     region: oregon
     rootDir: backend

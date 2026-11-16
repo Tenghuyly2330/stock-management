@@ -1,4 +1,4 @@
-name: StockSync CI/CD Pipeline (Render & Vercel)
+name: HouseStock CI/CD
 
 on:
   push:
@@ -16,9 +16,6 @@ env:
   FRONTEND_IMAGE_NAME: ${{ github.repository }}/frontend
 
 jobs:
-  # =========================================================================
-  # 1. TEST & LINT (Runs on all Pull Requests and Pushes)
-  # =========================================================================
   test-and-lint:
     name: Lint & Automated Tests
     runs-on: ubuntu-latest
@@ -51,9 +48,6 @@ jobs:
       - name: 7. Execute Frontend Production Build Check
         run: npm --prefix frontend run build
 
-  # =========================================================================
-  # 2. CLOUD DEPLOY (Render Backend & Vercel Frontend)
-  # =========================================================================
   deploy-cloud:
     name: Deploy to Render & Vercel
     needs: test-and-lint
@@ -84,9 +78,6 @@ jobs:
             cat frontend/vercel.json
           fi
 
-  # =========================================================================
-  # 3. DOCKER BUILD & CONTAINER REGISTRY (Optional / Backup)
-  # =========================================================================
   build-and-push-docker:
     name: Build & Push Docker Images
     needs: test-and-lint
