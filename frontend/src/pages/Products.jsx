@@ -28,30 +28,6 @@ import {
 } from 'lucide-react';
 import StatusCard from '../components/common/StatusCard';
 
-// Sample Presets for Farm Machinery & Metal Products
-const IMAGE_PRESETS = [
-  {
-    label: 'Farm Tractor',
-    url: 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=800&q=80',
-    category: 'Farm Machines',
-  },
-  {
-    label: 'Rotary Tiller',
-    url: 'https://images.unsplash.com/photo-1589824783837-6169889fa20f?auto=format&fit=crop&w=800&q=80',
-    category: 'Farm Machines',
-  },
-  {
-    label: 'Steel Rebar',
-    url: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80',
-    category: 'Metals',
-  },
-  {
-    label: 'Roofing Sheet',
-    url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80',
-    category: 'Metals',
-  },
-];
-
 export default function Products() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -89,8 +65,8 @@ export default function Products() {
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Image mode in form: 'preset' | 'upload' | 'url'
-  const [imageInputMode, setImageInputMode] = useState('preset');
+  // Image mode in form: 'upload' | 'url'
+  const [imageInputMode, setImageInputMode] = useState('upload');
   const [uploadingImage, setUploadingImage] = useState(false);
 
   // Form State
@@ -344,14 +320,14 @@ export default function Products() {
       sku: '',
       barcode: '',
       description: '',
-      imageUrl: IMAGE_PRESETS[0]?.url || '',
+      imageUrl: '',
       imagePublicId: '',
       purchasePrice: '',
       sellingPrice: '',
       minStockLevel: '5',
       initialStock: '0',
     });
-    setImageInputMode('preset');
+    setImageInputMode('upload');
     setFormError('');
     setIsModalOpen(true);
   };
@@ -371,7 +347,7 @@ export default function Products() {
       minStockLevel: p.min_stock_level,
       initialStock: '0',
     });
-    setImageInputMode(p.image_url ? 'url' : 'preset');
+    setImageInputMode(p.image_url && !p.image_public_id ? 'url' : 'upload');
     setFormError('');
     setIsModalOpen(true);
   };
@@ -626,14 +602,17 @@ export default function Products() {
                           {/* 1. Product Image & Name */}
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-3">
-                              <img
-                                src={
-                                  p.image_url ||
-                                  'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=200&q=80'
-                                }
-                                alt={p.name}
-                                className="w-12 h-12 object-cover rounded-lg border border-slate-200 shrink-0"
-                              />
+                              {p.image_url ? (
+                                <img
+                                  src={p.image_url}
+                                  alt={p.name}
+                                  className="w-12 h-12 object-cover rounded-lg border border-slate-200 shrink-0"
+                                />
+                              ) : (
+                                <div className="w-12 h-12 rounded-lg border border-slate-200 bg-slate-100 flex items-center justify-center shrink-0 text-slate-400">
+                                  <Package className="w-6 h-6" />
+                                </div>
+                              )}
                               <div>
                                 <div className="font-bold text-slate-900 leading-tight">
                                   {p.name}
@@ -806,14 +785,17 @@ export default function Products() {
 
                     return (
                       <div key={item.product.id} className="pt-3 first:pt-0 flex items-center gap-3">
-                        <img
-                          src={
-                            item.product.image_url ||
-                            'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=200&q=80'
-                          }
-                          alt={item.product.name}
-                          className="w-11 h-11 object-cover rounded-md border border-slate-200 shrink-0"
-                        />
+                        {item.product.image_url ? (
+                          <img
+                            src={item.product.image_url}
+                            alt={item.product.name}
+                            className="w-11 h-11 object-cover rounded-md border border-slate-200 shrink-0"
+                          />
+                        ) : (
+                          <div className="w-11 h-11 rounded-md border border-slate-200 bg-slate-100 flex items-center justify-center shrink-0 text-slate-400">
+                            <Package className="w-5 h-5" />
+                          </div>
+                        )}
 
                         <div className="flex-1 min-w-0">
                           <h4 className="font-bold text-slate-900 text-xs truncate">
@@ -1245,104 +1227,113 @@ export default function Products() {
                 </div>
               </div>
 
-              {/* Image Input Selection */}
+              {/* Product Image Selection (Upload to Cloudinary or URL Link) */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Product Image
-                </label>
-                <div className="flex gap-2 mb-2">
-                  <button
-                    type="button"
-                    onClick={() => setImageInputMode('preset')}
-                    className={`px-3 py-1 rounded text-xs font-medium cursor-pointer ${
-                      imageInputMode === 'preset' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    Sample Presets
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setImageInputMode('upload')}
-                    className={`px-3 py-1 rounded text-xs font-medium cursor-pointer ${
-                      imageInputMode === 'upload' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    Upload File
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setImageInputMode('url')}
-                    className={`px-3 py-1 rounded text-xs font-medium cursor-pointer ${
-                      imageInputMode === 'url' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    Direct Image URL
-                  </button>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    Product Image (Optional)
+                  </label>
+                  <div className="inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50">
+                    <button
+                      type="button"
+                      onClick={() => setImageInputMode('upload')}
+                      className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
+                        imageInputMode === 'upload'
+                          ? 'bg-white text-indigo-700 shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Upload File
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setImageInputMode('url')}
+                      className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
+                        imageInputMode === 'url'
+                          ? 'bg-white text-indigo-700 shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Image Link (URL)
+                    </button>
+                  </div>
                 </div>
 
-                {imageInputMode === 'preset' && (
-                  <div className="grid grid-cols-2 gap-2">
-                    {IMAGE_PRESETS.map((preset, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            imageUrl: preset.url,
-                            imagePublicId: '',
-                          }))
-                        }
-                        className={`flex items-center gap-2 p-1.5 rounded-lg border text-left cursor-pointer transition-all ${
-                          formData.imageUrl === preset.url
-                            ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-600'
-                            : 'border-slate-200 hover:bg-slate-50'
-                        }`}
-                      >
-                        <img
-                          src={preset.url}
-                          alt={preset.label}
-                          className="w-9 h-9 object-cover rounded shrink-0"
-                        />
-                        <div className="truncate">
-                          <p className="text-xs font-bold text-slate-800 truncate">{preset.label}</p>
-                          <p className="text-[10px] text-slate-400">{preset.category}</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-
+                {/* Upload Mode */}
                 {imageInputMode === 'upload' && (
-                  <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center">
+                  <div className="border-2 border-dashed border-slate-300 hover:border-indigo-400 transition-colors rounded-xl p-4 text-center bg-slate-50/50">
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handleFileUpload}
                       className="hidden"
                       id="product-image-upload"
+                      disabled={uploadingImage}
                     />
                     <label
                       htmlFor="product-image-upload"
-                      className="cursor-pointer flex flex-col items-center gap-1 text-slate-600 hover:text-indigo-600"
+                      className="cursor-pointer flex flex-col items-center gap-1.5 text-slate-600 hover:text-indigo-600"
                     >
-                      <UploadCloud className="w-8 h-8 text-slate-400" />
+                      <UploadCloud className="w-8 h-8 text-indigo-500 animate-pulse" />
                       <span className="text-xs font-semibold">
-                        {uploadingImage ? 'Uploading...' : 'Click to upload image'}
+                        {uploadingImage ? 'Uploading image...' : 'Click to upload from device'}
                       </span>
-                      <span className="text-[10px] text-slate-400">PNG, JPG, WEBP up to 10MB</span>
+                      <span className="text-[10px] text-slate-400">
+                        Supports PNG, JPG, WEBP (Saved to Cloudinary storage)
+                      </span>
                     </label>
                   </div>
                 )}
 
+                {/* URL Mode */}
                 {imageInputMode === 'url' && (
                   <input
                     type="url"
-                    placeholder="https://example.com/image.jpg"
+                    placeholder="https://example.com/product-image.jpg"
                     value={formData.imageUrl}
-                    onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        imageUrl: e.target.value,
+                        imagePublicId: '',
+                      }))
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
+                )}
+
+                {/* Image Preview if image exists */}
+                {formData.imageUrl && (
+                  <div className="mt-2.5 p-2 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <img
+                        src={formData.imageUrl}
+                        alt="Product Preview"
+                        className="w-10 h-10 object-cover rounded-lg border border-slate-200"
+                      />
+                      <div>
+                        <span className="text-xs font-semibold text-slate-800 block">
+                          Image Selected
+                        </span>
+                        <span className="text-[10px] text-emerald-600 font-medium">
+                          {formData.imagePublicId ? 'Uploaded to Cloudinary' : 'Web URL link'}
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          imageUrl: '',
+                          imagePublicId: '',
+                        }))
+                      }
+                      className="text-xs text-rose-600 hover:text-rose-800 font-medium px-2 py-1 rounded hover:bg-rose-50 cursor-pointer"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 )}
               </div>
 
