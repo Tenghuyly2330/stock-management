@@ -973,23 +973,12 @@ export default function Products() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="pt-1">
               <button
                 onClick={() => setCheckoutSuccess(null)}
-                className="flex-1 py-2.5 px-4 border border-slate-300 rounded-xl text-slate-700 font-semibold text-xs hover:bg-slate-50 transition-colors cursor-pointer"
+                className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
               >
-                New Order
-              </button>
-              <button
-                onClick={() => {
-                  const query = checkoutSuccess.customer || checkoutSuccess.partyIdentifier;
-                  setCheckoutSuccess(null);
-                  navigate(`/history?search=${encodeURIComponent(query)}`);
-                }}
-                className="flex-1 py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
-              >
-                <span>Find in History</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <span>Done / New Order</span>
               </button>
             </div>
           </div>
