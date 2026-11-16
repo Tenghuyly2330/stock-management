@@ -29,3 +29,4 @@ router.put('/:id', authorize('admin', 'manager'), updateWarehouse);
 router.delete('/:id', authorize('admin'), deleteWarehouse);
 
 module.exports = router;
+

@@ -85,6 +85,10 @@ async function runSeed() {
     // 3. SEED CATEGORIES
     console.log(' Seeding product categories...');
     const categoriesData = [
+      { name: 'Farm Machinery & Tractors', description: 'Utility tractors, rotary tillers, PTO augers, log splitters, and agricultural machinery' },
+      { name: 'Metals & Structural Steel', description: 'Rebar, corrugated steel sheets, aluminum I-beams, seamless pipes, and welding equipment' },
+      { name: 'Irrigation & Farm Pumps', description: 'High-flow diesel trash pumps, well submersible pumps, and agricultural piping' },
+      { name: 'Farm Hardware & Fencing', description: 'Barbed wire spools, steel T-posts, heavy-duty silage tarps, and livestock enclosures' },
       { name: 'Electronics', description: 'Sensors, microcontrollers, barcode scanners, and accessories' },
       { name: 'Hardware & Tools', description: 'Assembly tools, fasteners, drills, and brackets' },
       { name: 'Packaging & Shipping', description: 'Corrugated cartons, bubble wrap, labels, and strapping' },

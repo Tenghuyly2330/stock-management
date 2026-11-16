@@ -37,3 +37,4 @@ router.post('/adjust', authorize('admin', 'manager'), adjustStock);
 router.post('/transfer', authorize('admin', 'manager', 'staff'), transferStock);
 
 module.exports = router;
+
