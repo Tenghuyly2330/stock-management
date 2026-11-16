@@ -241,3 +241,4 @@ CREATE TABLE IF NOT EXISTS sales_order_items (
 
 CREATE INDEX IF NOT EXISTS idx_so_items_so_id ON sales_order_items(sales_order_id);
 CREATE INDEX IF NOT EXISTS idx_so_items_product_id ON sales_order_items(product_id);
+

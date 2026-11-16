@@ -2,20 +2,46 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Dashboard from '../pages/Dashboard';
+import Login from '../pages/Login';
+import Users from '../pages/Users';
 import PlaceholderPage from '../pages/PlaceholderPage';
 import NotFound from '../pages/NotFound';
+import ProtectedRoute from '../components/common/ProtectedRoute';
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<DashboardLayout />}>
+      {/* Public Routes */}
+      <Route path="/login" element={<Login />} />
+
+      {/* Protected Dashboard Routes */}
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<Dashboard />} />
+        
+        {/* User Management & RBAC - Live in Day 3 */}
+        <Route
+          path="users"
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'manager']}>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Future Modules Roadmaps */}
         <Route
           path="products"
           element={
             <PlaceholderPage
               title="Product Management"
-              stageNumber="3"
+              stageNumber="4"
               description="Manage master catalog of goods, barcodes, SKUs, category links, pricing tiers, and minimum safety stock thresholds."
               features={[
                 'Product CRUD with Barcode / SKU generation',
@@ -31,7 +57,7 @@ export default function AppRoutes() {
           element={
             <PlaceholderPage
               title="Category Taxonomy"
-              stageNumber="3"
+              stageNumber="4"
               description="Organize inventory items into logical hierarchies for streamlined reporting, filtering, and bulk operations."
               features={[
                 'Nested and flat category structures',
@@ -46,7 +72,7 @@ export default function AppRoutes() {
           element={
             <PlaceholderPage
               title="Inventory & Stock Movements"
-              stageNumber="4"
+              stageNumber="5"
               description="Live ledger of stock in, stock out, inventory adjustments, and multi-warehouse transfers with audit trails."
               features={[
                 'Stock In (Procurement receiving) & Stock Out (Sales dispatch)',
@@ -62,7 +88,7 @@ export default function AppRoutes() {
           element={
             <PlaceholderPage
               title="Warehouse Management"
-              stageNumber="4"
+              stageNumber="5"
               description="Manage physical distribution centers, retail storage rooms, and bin locations with per-location stock levels."
               features={[
                 'Multi-location configuration and contact mapping',
@@ -77,7 +103,7 @@ export default function AppRoutes() {
           element={
             <PlaceholderPage
               title="Purchase Orders & Procurement"
-              stageNumber="5"
+              stageNumber="6"
               description="Create purchase orders, track vendor deliveries, receive goods into inventory, and update cost averages."
               features={[
                 'Purchase order drafting and supplier dispatch',
@@ -92,7 +118,7 @@ export default function AppRoutes() {
           element={
             <PlaceholderPage
               title="Sales Orders & Fulfillment"
-              stageNumber="5"
+              stageNumber="6"
               description="Process customer orders, calculate taxes and totals, deduct inventory automatically, and print receipts."
               features={[
                 'Sales order creation with dynamic pricing',
@@ -107,7 +133,7 @@ export default function AppRoutes() {
           element={
             <PlaceholderPage
               title="Supplier Directory"
-              stageNumber="5"
+              stageNumber="6"
               description="Vendor profiles, contact persons, historical purchase orders, and lead-time tracking."
               features={[
                 'Supplier contact profiles and payment terms',
@@ -122,28 +148,13 @@ export default function AppRoutes() {
           element={
             <PlaceholderPage
               title="Reports & Analytics"
-              stageNumber="6"
+              stageNumber="7"
               description="Deep financial, valuation, inventory velocity, and reorder point analytics with CSV and PDF export."
               features={[
                 'Inventory valuation and stock turnover ratios',
                 'Low-stock threshold warning reports',
                 'Sales revenue vs. COGS (Cost of Goods Sold) graphs',
                 'Instant CSV and formatted PDF export engine',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="users"
-          element={
-            <PlaceholderPage
-              title="User Management & RBAC"
-              stageNumber="2"
-              description="Role-based access control governing permissions across Super Admin, Warehouse Manager, and Staff roles."
-              features={[
-                'User creation and credential management',
-                'Role matrix (Admin, Manager, Staff)',
-                'Granular permissions per module and action',
               ]}
             />
           }
@@ -168,4 +179,3 @@ export default function AppRoutes() {
     </Routes>
   );
 }
-
