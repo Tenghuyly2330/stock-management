@@ -5,3 +5,4 @@ metadata:
   labels:
     app.kubernetes.io/name: stock-system
     app.kubernetes.io/part-of: stock-management-system
+

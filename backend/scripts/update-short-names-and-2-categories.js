@@ -84,3 +84,4 @@ async function updateShortNamesAnd2Categories() {
 }
 
 updateShortNamesAnd2Categories();
+

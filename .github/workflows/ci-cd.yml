@@ -151,3 +151,4 @@ jobs:
           echo " kubectl set image deployment/backend-deployment backend=${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:sha-${{ github.sha }} -n stock-system"
           echo " kubectl rollout status deployment/backend-deployment -n stock-system --timeout=120s"
           echo "======================================================================"
+

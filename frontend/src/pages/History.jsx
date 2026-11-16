@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -17,11 +18,13 @@ import {
   Calendar,
   Layers,
   Building,
+  Phone,
 } from 'lucide-react';
 import StatusCard from '../components/common/StatusCard';
 
 export default function History() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
   const canOperate = ['admin', 'manager', 'staff'].includes(user?.role);
 
   const [historyList, setHistoryList] = useState([]);
@@ -35,7 +38,15 @@ export default function History() {
 
   // Filters
   const [activeTab, setActiveTab] = useState('ALL'); // 'ALL' | 'ADD' | 'BUY'
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(searchParams.get('search') || '');
+
+  // Synchronize with URL query parameter
+  useEffect(() => {
+    const query = searchParams.get('search');
+    if (query !== null) {
+      setSearch(query);
+    }
+  }, [searchParams]);
 
   // Dropdown products
   const [products, setProducts] = useState([]);
@@ -281,15 +292,23 @@ export default function History() {
         </div>
 
         {/* Search */}
-        <div className="relative w-full sm:w-72">
+        <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search product, customer, supplier..."
+            placeholder="Search customer phone, name, product, SKU..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-1.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-9 pr-8 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -369,12 +388,31 @@ export default function History() {
                       </td>
 
                       <td className="py-3 px-4">
-                        <div className="font-medium text-slate-900 text-xs">
-                          {row.party_name || (isBuy ? 'Walk-in Customer' : 'Approved Supplier')}
+                        <div className="flex items-center gap-1.5 font-bold text-slate-900 text-xs">
+                          {isBuy ? (
+                            <User className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                          ) : (
+                            <Building className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                          )}
+                          <span>
+                            {row.customer_name || row.party_name || (isBuy ? 'Walk-in Customer' : 'Approved Supplier')}
+                          </span>
                         </div>
-                        <span className="text-[10px] text-slate-400 uppercase">
-                          {isBuy ? 'Buyer / Customer' : 'Vendor / Supplier'}
-                        </span>
+
+                        {isBuy && row.customer_phone ? (
+                          <button
+                            onClick={() => setSearch(row.customer_phone)}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full text-[11px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 cursor-pointer transition-colors"
+                            title="Click to search all orders by this phone number"
+                          >
+                            <Phone className="w-2.5 h-2.5" />
+                            <span>{row.customer_phone}</span>
+                          </button>
+                        ) : (
+                          <span className="text-[10px] text-slate-400 uppercase mt-0.5 block">
+                            {isBuy ? 'Customer' : 'Vendor / Supplier'}
+                          </span>
+                        )}
                       </td>
 
                       <td className="py-3 px-4 text-right">

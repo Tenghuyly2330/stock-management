@@ -113,10 +113,28 @@ const getHistory = async (req, res, next) => {
     const listParams = [...params, limit, offset];
     const listResult = await query(listSql, listParams);
 
+    // Format customer name & phone for easy frontend search & identification
+    const formattedRows = listResult.rows.map((row) => {
+      let customerName = row.party_name;
+      let customerPhone = '';
+      if (row.party_name && row.party_name.includes('(')) {
+        const match = row.party_name.match(/^(.+?)\s*\(([^)]+)\)$/);
+        if (match) {
+          customerName = match[1].trim();
+          customerPhone = match[2].trim();
+        }
+      }
+      return {
+        ...row,
+        customer_name: customerName,
+        customer_phone: customerPhone,
+      };
+    });
+
     return res.status(200).json({
       success: true,
       message: 'History records retrieved successfully',
-      data: listResult.rows,
+      data: formattedRows,
       meta: {
         page,
         limit,
@@ -329,9 +347,150 @@ const recordBuyProduct = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Process multi-item cart sale / POS checkout from Products screen
+ * @route   POST /api/history/checkout
+ * @access  Private (Admin, Manager, Staff)
+ */
+const recordCheckout = async (req, res, next) => {
+  const client = await pool.connect();
+  try {
+    const { items, customerName, customerPhone, notes } = req.body;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return errorResponse(res, { statusCode: 400, message: 'Cart items cannot be empty' });
+    }
+
+    const cleanCustomerName = customerName ? customerName.trim() : 'Walk-in Customer';
+    const cleanCustomerPhone = customerPhone ? customerPhone.trim() : '';
+
+    // Party identifier: "Robert Vance (0987654321)" or "Robert Vance"
+    const partyIdentifier = cleanCustomerPhone 
+      ? `${cleanCustomerName} (${cleanCustomerPhone})` 
+      : cleanCustomerName;
+
+    await client.query('BEGIN');
+
+    const processedItems = [];
+    let grandTotal = 0;
+    let totalUnits = 0;
+
+    for (const item of items) {
+      const prodId = parseInt(item.productId, 10);
+      const qty = parseInt(item.quantity, 10);
+
+      if (!prodId || isNaN(prodId)) {
+        await client.query('ROLLBACK');
+        return errorResponse(res, { statusCode: 400, message: 'Invalid product ID in cart' });
+      }
+
+      if (!qty || isNaN(qty) || qty <= 0) {
+        await client.query('ROLLBACK');
+        return errorResponse(res, { statusCode: 400, message: `Invalid quantity for product ID ${prodId}` });
+      }
+
+      // 1. Lock stock row in Base Warehouse
+      const lockSql = `
+        SELECT i.quantity, p.id, p.name AS product_name, p.sku, p.selling_price
+        FROM inventory i
+        JOIN products p ON i.product_id = p.id
+        WHERE i.product_id = $1 AND i.warehouse_id = $2
+        FOR UPDATE
+      `;
+      const lockRes = await client.query(lockSql, [prodId, BASE_WAREHOUSE_ID]);
+
+      if (lockRes.rows.length === 0 || lockRes.rows[0].quantity < qty) {
+        const available = lockRes.rows.length > 0 ? lockRes.rows[0].quantity : 0;
+        const prodName = lockRes.rows[0]?.product_name || `Product #${prodId}`;
+        await client.query('ROLLBACK');
+        return errorResponse(res, {
+          statusCode: 400,
+          message: `Insufficient stock for "${prodName}". Available in Base: ${available} units, Requested: ${qty} units.`,
+        });
+      }
+
+      const product = lockRes.rows[0];
+
+      // 2. Deduct inventory
+      await client.query(
+        `UPDATE inventory 
+         SET quantity = quantity - $1 
+         WHERE product_id = $2 AND warehouse_id = $3`,
+        [qty, prodId, BASE_WAREHOUSE_ID]
+      );
+
+      // 3. Calculate price
+      const unitPrice = item.unitPrice && parseFloat(item.unitPrice) > 0 
+        ? parseFloat(item.unitPrice) 
+        : parseFloat(product.selling_price);
+      const itemSubtotal = parseFloat((unitPrice * qty).toFixed(2));
+      grandTotal += itemSubtotal;
+      totalUnits += qty;
+
+      // 4. Record stock movement
+      const noteDetails = `POS Sale: ${cleanCustomerName}${cleanCustomerPhone ? ' (Tel: ' + cleanCustomerPhone + ')' : ''} bought ${qty}x ${product.product_name}${notes ? ' - ' + notes.trim() : ''}`;
+
+      const moveRes = await client.query(
+        `INSERT INTO stock_movements (
+          product_id,
+          source_warehouse_id,
+          movement_type,
+          quantity,
+          reference_type,
+          reference_id,
+          notes,
+          created_by
+        ) VALUES ($1, $2, 'OUT', $3, 'SALES_ORDER', $4, $5, $6)
+        RETURNING id, created_at`,
+        [
+          prodId,
+          BASE_WAREHOUSE_ID,
+          qty,
+          partyIdentifier,
+          noteDetails,
+          req.user.id,
+        ]
+      );
+
+      processedItems.push({
+        movementId: moveRes.rows[0].id,
+        productId: prodId,
+        productName: product.product_name,
+        sku: product.sku,
+        quantity: qty,
+        unitPrice,
+        subtotal: itemSubtotal,
+      });
+    }
+
+    await client.query('COMMIT');
+
+    return successResponse(res, {
+      statusCode: 201,
+      message: `Sale completed: ${cleanCustomerName} purchased ${totalUnits} units across ${processedItems.length} products (Total: $${grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`,
+      data: {
+        customerName: cleanCustomerName,
+        customerPhone: cleanCustomerPhone,
+        partyIdentifier,
+        totalAmount: grandTotal.toFixed(2),
+        totalUnits,
+        itemsCount: processedItems.length,
+        items: processedItems,
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    next(error);
+  } finally {
+    client.release();
+  }
+};
+
 module.exports = {
   getHistory,
   recordAddProduct,
   recordBuyProduct,
+  recordCheckout,
 };
 

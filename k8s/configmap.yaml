@@ -9,3 +9,4 @@ data:
   CLIENT_URL: "https://stock.example.com"
   JWT_EXPIRES_IN: "24h"
   CLOUDINARY_FOLDER: "stock"
+
