@@ -52,27 +52,15 @@ The application is tailored for **Farm Machinery & Industrial Metals** distribut
 | 6 | **Suppliers** | `/suppliers` | Industrial machinery and metallurgical suppliers with order history and contact details. |
 | 7 | **Users** | `/users` | Role-Based Access Control (**Admin**, **Manager**, **Staff**) with secure password management. |
 | 8 | **Settings** | `/settings` | Base Warehouse configuration, company branding, and security credentials update. |
-
 ---
 
-## 3. Product Catalog
-
-The system starts with 4 core industrial products featuring concise names:
-
-1. **Farm Tractor** (`MCH-TRC-75HP`) - Category: `Farm Machines` | Cost: $22,500.00 | Sell: $29,990.00
-2. **Rotary Tiller** (`MCH-TIL-72IN`) - Category: `Farm Machines` | Cost: $2,400.00 | Sell: $3,450.00
-3. **Steel Rebar** (`MTL-RBR-050B`) - Category: `Metals` | Cost: $490.00 | Sell: $680.00
-4. **Roofing Sheet** (`MTL-CRG-29G12`) - Category: `Metals` | Cost: $220.00 | Sell: $345.00
-
----
-
-## 4. Default Demo Credentials
+## 3. Default Demo Credentials
 
 | Role | Email | Password | Permissions |
 |---|---|---|---|
-| **Admin** | `admin@stocksync.com` | `Admin@123456` | Full administrative access to users, settings, and inventory |
-| **Manager** | `manager@stocksync.com` | `Manager@123456` | Manage products, categories, stock, suppliers, and view logs |
-| **Staff** | `staff@stocksync.com` | `Staff@123456` | Record customer sales (Buy) and stock additions (Add) |
+| **Admin** | `admin@gmail.com` | `123456` | Full administrative access to users, settings, and inventory |
+| **Manager** | `manager@gmail.com` | `123456` | Manage products, categories, stock, suppliers, and view logs |
+| **Staff** | `staff@gmail.com` | `123456` | Record customer sales (Buy) and stock additions (Add) |
 
 ---
 
@@ -91,69 +79,7 @@ The system starts with 4 core industrial products featuring concise names:
 
 ---
 
-## 6. Getting Started Locally
-
-### Prerequisites
-- Node.js >= 20.x
-- npm >= 10.x
-- PostgreSQL >= 15.x (or remote cloud database like Neon)
-
-### 1. Clone & Install
-```bash
-git clone https://github.com/your-username/stock-management-system.git
-cd stock-management-system
-
-# Install backend dependencies
-cd backend
-npm install
-
-# Install frontend dependencies
-cd ../frontend
-npm install
-```
-
-### 2. Configure Environment Variables
-In `backend/.env`:
-```env
-PORT=5000
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
-DB_URL=postgresql://postgres:postgres@localhost:5432/stock_management
-JWT_SECRET=super_secret_jwt_key_minimum_32_characters_long
-JWT_EXPIRES_IN=24h
-
-# Cloudinary (Optional - system falls back automatically to local disk uploads/)
-CLOUDINARY_CLOUD_NAME=ds7w2aznz
-CLOUDINARY_API_KEY=263134127278318
-CLOUDINARY_API_SECRET=dG-rWWvaktUUOhTFdOWDSjeyh28
-CLOUDINARY_FOLDER=stock
-```
-
-### 3. Initialize Database Migrations and Seed Data
-```bash
-cd backend
-npm run db:migrate
-node scripts/setup-single-warehouse-4-products.js
-```
-
-### 4. Run Development Servers
-In Terminal 1 (Backend):
-```bash
-cd backend
-npm run dev
-```
-
-In Terminal 2 (Frontend):
-```bash
-cd frontend
-npm run dev
-```
-
-Frontend runs at `http://localhost:5173`. Backend runs at `http://localhost:5000`.
-
----
-
-## 7. Running with Docker Compose
+## 6. Running with Docker Compose
 
 Deploy the complete multi-tier production stack (Postgres + Backend API + React Frontend + Nginx Gateway) in 1 command:
 
@@ -180,7 +106,7 @@ docker-compose --profile monitoring up -d
 
 ---
 
-## 8. GitHub Actions CI/CD Pipeline
+## 7. GitHub Actions CI/CD Pipeline
 
 The automated workflow located at `.github/workflows/ci-cd.yml` executes on every push and pull request:
 
