@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import StatusCard from '../components/common/StatusCard';
 import api from '../api/axios';
+import {Helmet} from 'react-helmet-async';
 
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState({
@@ -65,7 +66,12 @@ export default function Dashboard() {
   }, []);
 
   return (
+
+    
     <div className="space-y-6">
+      <Helmet>
+        <title>Dashboard | HouseStock</title>
+      </Helmet>
       <div className="rounded-2xl bg-linear-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 sm:p-7 text-white shadow-md">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>

@@ -1,23 +1,21 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { Helmet } from 'react-helmet-async';
 import {
   Users as UsersIcon,
   UserPlus,
   ShieldCheck,
   Shield,
   Search,
-  Filter,
   CheckCircle2,
-  XCircle,
-  MoreVertical,
   Edit2,
   UserX,
   RefreshCw,
   Mail,
   Phone,
-  Key,
   X,
   AlertCircle,
 } from 'lucide-react';
@@ -184,7 +182,11 @@ export default function Users() {
 
   return (
     <div className="space-y-6">
-      {/* Header bar */}
+
+      <Helmet>
+        <title>Users | HouseStock</title>
+      </Helmet>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">User Management</h1>
@@ -467,7 +469,7 @@ export default function Users() {
                     required
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                     placeholder="John"
                   />
                 </div>
@@ -478,7 +480,7 @@ export default function Users() {
                     required
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                     placeholder="Doe"
                   />
                 </div>
@@ -491,7 +493,7 @@ export default function Users() {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                   placeholder="john.doe@stocksync.com"
                 />
               </div>
@@ -504,7 +506,7 @@ export default function Users() {
                   minLength={6}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                   placeholder="Temporary password"
                 />
               </div>
@@ -516,7 +518,7 @@ export default function Users() {
                     required
                     value={formData.roleId}
                     onChange={(e) => setFormData({ ...formData, roleId: e.target.value })}
-                    className="w-full rounded-lg border border-slate-200 p-2 text-sm bg-white focus:border-indigo-500 focus:outline-none uppercase"
+                    className="w-full rounded-lg border border-slate-200 p-2 text-sm bg-white focus:outline-none uppercase"
                   >
                     {roles.map((r) => (
                       <option key={r.id} value={r.id}>
@@ -531,7 +533,7 @@ export default function Users() {
                     type="text"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                     placeholder="+1-555-0199"
                   />
                 </div>
@@ -558,7 +560,6 @@ export default function Users() {
         </div>
       )}
 
-      {/* EDIT USER MODAL */}
       {isEditModalOpen && selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-slate-200">
@@ -590,7 +591,7 @@ export default function Users() {
                     required
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                   />
                 </div>
                 <div>
@@ -600,7 +601,7 @@ export default function Users() {
                     required
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                   />
                 </div>
               </div>
@@ -612,7 +613,7 @@ export default function Users() {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                 />
               </div>
 
@@ -625,7 +626,7 @@ export default function Users() {
                   minLength={6}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                   placeholder="New password (optional)"
                 />
               </div>
@@ -637,7 +638,7 @@ export default function Users() {
                     required
                     value={formData.roleId}
                     onChange={(e) => setFormData({ ...formData, roleId: e.target.value })}
-                    className="w-full rounded-lg border border-slate-200 p-2 text-sm bg-white focus:border-indigo-500 focus:outline-none uppercase"
+                    className="w-full rounded-lg border border-slate-200 p-2 text-sm bg-white focus:outline-none uppercase"
                   >
                     {roles.map((r) => (
                       <option key={r.id} value={r.id}>
@@ -652,7 +653,7 @@ export default function Users() {
                     type="text"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                   />
                 </div>
               </div>

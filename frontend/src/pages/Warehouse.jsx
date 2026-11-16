@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { Helmet } from 'react-helmet-async';
 import {
   Warehouse,
   Package,
@@ -139,6 +140,11 @@ export default function WarehousePage() {
 
   return (
     <div className="space-y-6">
+
+      <Helmet>
+        <title>Warehouse | HouseStock</title>
+      </Helmet>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">

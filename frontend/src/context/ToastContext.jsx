@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import {
   CheckCircle2,
   AlertCircle,
@@ -57,7 +57,6 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={toast}>
       {children}
 
-      {/* Top-Right Toast Notification Container */}
       <aside aria-label="Notifications" className="fixed top-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0">
         {toasts.map((t) => {
           let badgeStyles;

@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { Helmet } from 'react-helmet-async';
 import {
   Settings as SettingsIcon,
   Building,
@@ -158,6 +160,11 @@ export default function Settings() {
 
   return (
     <div className="space-y-6 max-w-4xl">
+
+      <Helmet>
+        <title>Settings | HouseStock</title>
+      </Helmet>
+
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
           <SettingsIcon className="w-7 h-7 text-indigo-600" />
@@ -173,7 +180,7 @@ export default function Settings() {
           </div>
           <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200 flex items-center gap-1">
             <Boxes className="w-3.5 h-3.5 text-emerald-600" />
-            Base Warehouse (ID #1)
+            Base Warehouse
           </span>
         </div>
 
@@ -202,7 +209,7 @@ export default function Settings() {
                   disabled={!canManage}
                   value={companySettings.companyName}
                   onChange={(e) => setCompanySettings({ ...companySettings, companyName: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 disabled:text-slate-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:text-slate-500"
                 />
               </div>
 
@@ -216,7 +223,7 @@ export default function Settings() {
                   disabled={!canManage}
                   value={companySettings.baseWarehouseName}
                   onChange={(e) => setCompanySettings({ ...companySettings, baseWarehouseName: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 disabled:text-slate-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:text-slate-500"
                 />
               </div>
             </div>
@@ -232,7 +239,7 @@ export default function Settings() {
                   disabled={!canManage}
                   value={companySettings.baseWarehouseCode}
                   onChange={(e) => setCompanySettings({ ...companySettings, baseWarehouseCode: e.target.value.toUpperCase() })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 disabled:text-slate-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:text-slate-500"
                 />
               </div>
 
@@ -245,7 +252,7 @@ export default function Settings() {
                   disabled={!canManage}
                   value={companySettings.currencySymbol}
                   onChange={(e) => setCompanySettings({ ...companySettings, currencySymbol: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 disabled:text-slate-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:text-slate-500"
                 />
               </div>
 
@@ -259,7 +266,7 @@ export default function Settings() {
                   disabled={!canManage}
                   value={companySettings.reorderAlertThreshold}
                   onChange={(e) => setCompanySettings({ ...companySettings, reorderAlertThreshold: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 disabled:text-slate-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:text-slate-500"
                 />
               </div>
             </div>
@@ -275,7 +282,7 @@ export default function Settings() {
                   placeholder="e.g. Me Sang, Prey Veng Province"
                   value={companySettings.baseWarehouseAddress}
                   onChange={(e) => setCompanySettings({ ...companySettings, baseWarehouseAddress: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 disabled:text-slate-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:text-slate-500"
                 />
               </div>
 
@@ -289,7 +296,7 @@ export default function Settings() {
                   placeholder="e.g. +855-10-800-994"
                   value={companySettings.baseWarehousePhone}
                   onChange={(e) => setCompanySettings({ ...companySettings, baseWarehousePhone: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 disabled:text-slate-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:text-slate-500"
                 />
               </div>
             </div>
@@ -304,7 +311,7 @@ export default function Settings() {
                   disabled={!canManage}
                   value={companySettings.supportEmail}
                   onChange={(e) => setCompanySettings({ ...companySettings, supportEmail: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 disabled:text-slate-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:text-slate-500"
                 />
               </div>
 
@@ -317,7 +324,7 @@ export default function Settings() {
                   disabled={!canManage}
                   value={companySettings.supportPhone}
                   onChange={(e) => setCompanySettings({ ...companySettings, supportPhone: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 disabled:text-slate-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:text-slate-500"
                 />
               </div>
             </div>

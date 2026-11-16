@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { Helmet } from 'react-helmet-async';
 import {
   Layers,
   Plus,
@@ -132,6 +133,11 @@ export default function Categories() {
 
   return (
     <div className="space-y-6">
+
+      <Helmet>
+        <title>Categories | HouseStock</title>
+      </Helmet>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">Category Taxonomy</h1>
@@ -191,7 +197,7 @@ export default function Categories() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search category name, description..."
-            className="w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-4 py-1.5 text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-4 py-1.5 text-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
           />
         </div>
 
@@ -199,7 +205,7 @@ export default function Categories() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700 focus:bg-white focus:border-indigo-500 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700 focus:outline-none"
           >
             <option value="">All Statuses</option>
             <option value="active">Active Only</option>
@@ -216,7 +222,6 @@ export default function Categories() {
         </div>
       </div>
 
-      {/* Categories Table */}
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-slate-600">
@@ -356,7 +361,7 @@ export default function Categories() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g. Safety Equipment"
-                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                 />
               </div>
 
@@ -367,7 +372,7 @@ export default function Categories() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Briefly describe the goods and inventory classified under this category..."
-                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                 />
               </div>
 
@@ -392,7 +397,6 @@ export default function Categories() {
         </div>
       )}
 
-      {/* EDIT MODAL */}
       {isEditModalOpen && selectedCategory && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-slate-200">
@@ -418,7 +422,7 @@ export default function Categories() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                 />
               </div>
 
@@ -428,7 +432,7 @@ export default function Categories() {
                   rows={3}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 p-2 text-sm focus:outline-none"
                 />
               </div>
 

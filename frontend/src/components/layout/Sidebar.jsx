@@ -91,7 +91,6 @@ export default function Sidebar({ isOpen, onClose }) {
           <div className="flex items-center gap-2 text-xs text-slate-600">
             <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
             <span className="font-medium text-slate-900">Base Warehouse</span>
-            <span className="font-mono text-[10px] bg-slate-200 px-1.5 py-0.2 rounded text-slate-700">BASE-01</span>
           </div>
         </div>
       </aside>

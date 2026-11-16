@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../api/axios';
+import { Helmet } from 'react-helmet-async';
 import {
   History as HistoryIcon,
   ShoppingCart,
@@ -79,6 +80,11 @@ export default function History() {
 
   return (
     <div className="space-y-6">
+
+      <Helmet>
+        <title>History | HouseStock</title>
+      </Helmet>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { Helmet } from 'react-helmet-async';
 import {
   Package,
   Plus,
@@ -411,6 +412,11 @@ export default function Products() {
 
   return (
     <div className="space-y-6">
+
+      <Helmet>
+        <title>Products | HouseStock</title>
+      </Helmet>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
@@ -839,9 +845,8 @@ export default function Products() {
                   </div>
                 </div>
 
-                {/* Single Customer Field (Phone or Name) - No Notes */}
                 <div className="pt-1">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 items-center gap-1.5">
                     <User className="w-3.5 h-3.5 text-indigo-600" />
                     Customer (Phone or Name) *
                   </label>
@@ -853,7 +858,7 @@ export default function Products() {
                       placeholder="Enter phone number or customer name..."
                       value={customerInput}
                       onChange={(e) => setCustomerInput(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2.5 border border-slate-300 rounded-xl text-xs bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
+                      className="w-full pl-9 pr-3 py-2.5 border border-slate-300 rounded-xl text-xs bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
                     />
                   </div>
                   <span className="text-[10px] text-slate-400 mt-1 block">
@@ -861,7 +866,6 @@ export default function Products() {
                   </span>
                 </div>
 
-                {/* Checkout Button */}
                 <button
                   type="submit"
                   disabled={isCheckingOut}
@@ -885,9 +889,7 @@ export default function Products() {
         </div>
       </div>
 
-      {/* ========================================================================= */}
-      {/* 4. CHECKOUT SUCCESS RECEIPT MODAL                                         */}
-      {/* ========================================================================= */}
+
       {checkoutSuccess && (
         <div 
           onClick={() => setCheckoutSuccess(null)}
@@ -897,7 +899,6 @@ export default function Products() {
             onClick={(e) => e.stopPropagation()}
             className="relative bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-100 p-6 space-y-5 animate-in fade-in zoom-in-95"
           >
-            {/* Top-Right X Close Button */}
             <button
               type="button"
               onClick={() => setCheckoutSuccess(null)}
@@ -909,7 +910,7 @@ export default function Products() {
 
             <div className="text-center space-y-2 pt-2">
               <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
-                <Check className="w-8 h-8 stroke-[3]" />
+                <Check className="w-8 h-8 stroke-3" />
               </div>
               <h3 className="text-xl font-bold text-slate-900">Sale Recorded Successfully!</h3>
               <p className="text-xs text-slate-500">
@@ -939,9 +940,6 @@ export default function Products() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 5. RESTOCK MODAL (Owner Adding More Products to Base Stock)               */}
-      {/* ========================================================================= */}
       {isRestockModalOpen && restockProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-100">
@@ -966,7 +964,6 @@ export default function Products() {
                 </div>
               )}
 
-              {/* Product Info Card */}
               <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-1">
                 <div className="font-bold text-slate-900 text-sm">{restockProduct.name}</div>
                 <div className="font-mono text-indigo-600">SKU: {restockProduct.sku}</div>
@@ -975,7 +972,6 @@ export default function Products() {
                 </div>
               </div>
 
-              {/* Quantity to Add */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
                   Quantity Units to Add *
@@ -992,7 +988,6 @@ export default function Products() {
                 />
               </div>
 
-              {/* Supplier / Restock Source */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
                   Supplier / Restock Source *
@@ -1007,7 +1002,6 @@ export default function Products() {
                 />
               </div>
 
-              {/* Unit Cost */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
                   Unit Cost ($)
@@ -1022,7 +1016,6 @@ export default function Products() {
                 />
               </div>
 
-              {/* Notes */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
                   Restock Notes (Optional)
@@ -1057,9 +1050,7 @@ export default function Products() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 6. CREATE / EDIT PRODUCT MODAL (For Admins and Managers)                  */}
-      {/* ========================================================================= */}
+
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-slate-100">
@@ -1084,10 +1075,9 @@ export default function Products() {
                 </div>
               )}
 
-              {/* Product Name */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Product Short Name *
+                  Product Name *
                 </label>
                 <input
                   type="text"
@@ -1099,7 +1089,6 @@ export default function Products() {
                 />
               </div>
 
-              {/* Category */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
                   Category *
@@ -1119,7 +1108,6 @@ export default function Products() {
                 </select>
               </div>
 
-              {/* SKU */}
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
@@ -1143,7 +1131,6 @@ export default function Products() {
                 />
               </div>
 
-              {/* Initial Stock (Only for new product creation) */}
               {!editingProduct && (
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
@@ -1194,7 +1181,6 @@ export default function Products() {
                 </div>
               </div>
 
-              {/* Product Image Selection (Upload to Cloudinary or URL Link) */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
@@ -1226,7 +1212,6 @@ export default function Products() {
                   </div>
                 </div>
 
-                {/* Upload Mode */}
                 {imageInputMode === 'upload' && (
                   <div className="border-2 border-dashed border-slate-300 hover:border-indigo-400 transition-colors rounded-xl p-4 text-center bg-slate-50/50">
                     <input
@@ -1252,7 +1237,6 @@ export default function Products() {
                   </div>
                 )}
 
-                {/* URL Mode */}
                 {imageInputMode === 'url' && (
                   <input
                     type="url"
@@ -1269,7 +1253,6 @@ export default function Products() {
                   />
                 )}
 
-                {/* Image Preview if image exists */}
                 {formData.imageUrl && (
                   <div className="mt-2.5 p-2 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
@@ -1304,7 +1287,6 @@ export default function Products() {
                 )}
               </div>
 
-              {/* Modal Buttons */}
               <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
                 <button
                   type="button"

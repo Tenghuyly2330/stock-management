@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -8,24 +9,18 @@ import {
   ArrowLeftRight,
   SlidersHorizontal,
   Search,
-  Filter,
   AlertTriangle,
   CheckCircle2,
   XCircle,
   History,
-  Layers,
   Warehouse,
   DollarSign,
-  TrendingUp,
   AlertCircle,
   X,
   ArrowDownLeft,
   ArrowUpRight,
   RefreshCw,
-  User,
-  Clock,
   ChevronRight,
-  PackageCheck,
 } from 'lucide-react';
 
 export default function Inventory() {
@@ -33,10 +28,8 @@ export default function Inventory() {
   const canOperate = ['admin', 'manager', 'staff'].includes(user?.role);
   const canAdjust = ['admin', 'manager'].includes(user?.role);
 
-  // Active Tab: 'matrix' | 'movements'
   const [activeTab, setActiveTab] = useState('matrix');
 
-  // Inventory Data
   const [inventory, setInventory] = useState([]);
   const [stats, setStats] = useState({
     total_items: 0,
@@ -47,35 +40,28 @@ export default function Inventory() {
   });
   const [loadingInv, setLoadingInv] = useState(true);
 
-  // Movements Data
   const [movements, setMovements] = useState([]);
   const [loadingMovements, setLoadingMovements] = useState(false);
 
-  // Aux Data for Dropdowns
   const [warehouses, setWarehouses] = useState([]);
   const [categories, setCategories] = useState([]);
   const [productsList, setProductsList] = useState([]);
 
-  // Filters for Matrix
   const [search, setSearch] = useState('');
   const [selectedWh, setSelectedWh] = useState('');
   const [selectedCat, setSelectedCat] = useState('');
   const [stockStatus, setStockStatus] = useState('');
 
-  // Filters for Movements
   const [movementSearch, setMovementSearch] = useState('');
   const [movementType, setMovementType] = useState('');
   const [movementWh, setMovementWh] = useState('');
 
-  // Notifications
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
 
-  // Modals
-  const [modalType, setModalType] = useState(null); // 'STOCK_IN' | 'STOCK_OUT' | 'TRANSFER' | 'ADJUST' | null
+  const [modalType, setModalType] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Form states
   const [formProductId, setFormProductId] = useState('');
   const [formWarehouseId, setFormWarehouseId] = useState('');
   const [formDestWarehouseId, setFormDestWarehouseId] = useState('');
@@ -86,7 +72,6 @@ export default function Inventory() {
   const [formReason, setFormReason] = useState('Physical count cycle audit');
   const [formNotes, setFormNotes] = useState('');
 
-  // Load dropdown resources
   useEffect(() => {
     const loadMetadata = async () => {
       try {
@@ -105,7 +90,6 @@ export default function Inventory() {
     loadMetadata();
   }, []);
 
-  // Fetch Inventory Matrix
   const fetchInventory = async () => {
     try {
       setLoadingInv(true);
@@ -137,7 +121,6 @@ export default function Inventory() {
     }
   }, [search, selectedWh, selectedCat, stockStatus, activeTab]);
 
-  // Fetch Stock Movements
   const fetchMovements = async () => {
     try {
       setLoadingMovements(true);
@@ -165,7 +148,6 @@ export default function Inventory() {
     }
   }, [movementSearch, movementType, movementWh, activeTab]);
 
-  // Helper to open modal with pre-selected item
   const openModal = (type, item = null) => {
     setError(null);
     setModalType(type);
@@ -194,7 +176,6 @@ export default function Inventory() {
     setIsSubmitting(false);
   };
 
-  // Helper: Find current stock of selected product in selected warehouse
   const getCurrentStock = (prodId, whId) => {
     if (!prodId || !whId) return 0;
     const match = inventory.find(
@@ -267,7 +248,6 @@ export default function Inventory() {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner & Quick Action Buttons */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
@@ -315,7 +295,6 @@ export default function Inventory() {
         )}
       </div>
 
-      {/* Notifications */}
       {successMsg && (
         <div className="flex items-center gap-2 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-sm animate-in fade-in duration-150">
           <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
@@ -329,7 +308,6 @@ export default function Inventory() {
         </div>
       )}
 
-      {/* High Level KPI Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
@@ -374,7 +352,6 @@ export default function Inventory() {
         </div>
       </div>
 
-      {/* Tabs Navigation */}
       <div className="border-b border-slate-200">
         <div className="flex gap-8">
           <button
@@ -402,10 +379,8 @@ export default function Inventory() {
         </div>
       </div>
 
-      {/* TAB 1: LIVE INVENTORY MATRIX */}
       {activeTab === 'matrix' && (
         <div className="space-y-4">
-          {/* Filters Bar */}
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-3 items-center justify-between">
             <div className="relative w-full md:w-80">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -419,7 +394,6 @@ export default function Inventory() {
             </div>
 
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-              {/* Warehouse Filter */}
               <select
                 value={selectedWh}
                 onChange={(e) => setSelectedWh(e.target.value)}
@@ -433,7 +407,6 @@ export default function Inventory() {
                 ))}
               </select>
 
-              {/* Category Filter */}
               <select
                 value={selectedCat}
                 onChange={(e) => setSelectedCat(e.target.value)}
@@ -447,7 +420,6 @@ export default function Inventory() {
                 ))}
               </select>
 
-              {/* Stock Status Filter */}
               <select
                 value={stockStatus}
                 onChange={(e) => setStockStatus(e.target.value)}
@@ -461,7 +433,6 @@ export default function Inventory() {
             </div>
           </div>
 
-          {/* Matrix Table */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
             {loadingInv ? (
               <div className="p-12 text-center text-slate-500">
@@ -773,13 +744,9 @@ export default function Inventory() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* TRANSACTION MODALS (Stock In, Stock Out, Transfer, Adjust)               */}
-      {/* ========================================================================= */}
       {modalType && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
-            {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/75">
               <h3 className="font-bold text-slate-900 flex items-center gap-2">
                 {modalType === 'STOCK_IN' && <PlusCircle className="w-5 h-5 text-emerald-600" />}
@@ -796,9 +763,7 @@ export default function Inventory() {
               </button>
             </div>
 
-            {/* Modal Form */}
             <form onSubmit={handleSubmitAction} className="p-6 space-y-4">
-              {/* Product Selector */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
                   Product *
@@ -818,7 +783,6 @@ export default function Inventory() {
                 </select>
               </div>
 
-              {/* Warehouse Selection depending on type */}
               {modalType === 'STOCK_IN' && (
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
