@@ -37,10 +37,7 @@ export default function History() {
 
   // Synchronize with URL query parameter
   useEffect(() => {
-    const query = searchParams.get('search');
-    if (query !== null) {
-      setSearch(query);
-    }
+    setSearch(searchParams.get('search') || '');
   }, [searchParams]);
 
   // Fetch History (Automated Log)
@@ -53,9 +50,22 @@ export default function History() {
       if (search) params.search = search;
 
       const res = await api.get('/history', { params });
-      setHistoryList(res.data.data || []);
-      if (res.data.stats) {
-        setStats(res.data.stats);
+
+      // Robust extraction of records array from API response
+      const records = Array.isArray(res.data)
+        ? res.data
+        : Array.isArray(res.data?.data)
+        ? res.data.data
+        : Array.isArray(res)
+        ? res
+        : [];
+
+      setHistoryList(records);
+
+      // Robust extraction of summary statistics
+      const statsObj = res.stats || res.data?.stats || null;
+      if (statsObj) {
+        setStats(statsObj);
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch history records');

@@ -60,7 +60,7 @@ export default function Suppliers() {
       if (statusFilter) params.status = statusFilter;
 
       const res = await api.get('/suppliers', { params });
-      setSuppliers(res.data.data || []);
+      setSuppliers(Array.isArray(res.data) ? res.data : (Array.isArray(res.data?.data) ? res.data.data : []));
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch suppliers');
     } finally {
@@ -139,7 +139,7 @@ export default function Suppliers() {
       setHistoryModalOpen(true);
       setLoadingHistory(true);
       const res = await api.get(`/suppliers/${sup.id}`);
-      setSelectedSupplier(res.data.data);
+      setSelectedSupplier(res.data || res);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load supplier purchase history');
     } finally {
