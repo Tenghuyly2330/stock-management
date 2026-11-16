@@ -1,15 +1,15 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Dashboard from '../pages/Dashboard';
 import Login from '../pages/Login';
 import Users from '../pages/Users';
 import Products from '../pages/Products';
 import Categories from '../pages/Categories';
-import Warehouses from '../pages/Warehouses';
+import WarehousePage from '../pages/Warehouse';
+import History from '../pages/History';
 import Suppliers from '../pages/Suppliers';
-import Inventory from '../pages/Inventory';
-import PlaceholderPage from '../pages/PlaceholderPage';
+import Settings from '../pages/Settings';
 import NotFound from '../pages/NotFound';
 import ProtectedRoute from '../components/common/ProtectedRoute';
 
@@ -28,18 +28,27 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
+        {/* 1. Dashboard */}
         <Route index element={<Dashboard />} />
         
-        {/* Core Catalog Modules - Live in Day 4 */}
+        {/* 2. Products (Farm Machines & Metals) */}
         <Route path="products" element={<Products />} />
+
+        {/* 3. Categories */}
         <Route path="categories" element={<Categories />} />
 
-        {/* Warehouse & Inventory Logistics - Live in Day 5 */}
-        <Route path="inventory" element={<Inventory />} />
-        <Route path="warehouses" element={<Warehouses />} />
+        {/* 4. Warehouse (1 is Base Warehouse) */}
+        <Route path="warehouse" element={<WarehousePage />} />
+        <Route path="warehouses" element={<Navigate to="/warehouse" replace />} />
+
+        {/* 5. History (Who buy and add products) */}
+        <Route path="history" element={<History />} />
+        <Route path="inventory" element={<Navigate to="/history" replace />} />
+
+        {/* 6. Supplier */}
         <Route path="suppliers" element={<Suppliers />} />
 
-        {/* User Management & RBAC - Live in Day 3 */}
+        {/* 7. User Management (Admin & Manager) */}
         <Route
           path="users"
           element={
@@ -49,68 +58,10 @@ export default function AppRoutes() {
           }
         />
 
-        {/* Future Modules Roadmaps */}
-        <Route
-          path="purchases"
-          element={
-            <PlaceholderPage
-              title="Purchase Orders & Procurement"
-              stageNumber="6"
-              description="Create purchase orders, track vendor deliveries, receive goods into inventory, and update cost averages."
-              features={[
-                'Purchase order drafting and supplier dispatch',
-                'Partial and full stock receiving with status updates',
-                'Automatic inventory replenishment on PO receipt',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="sales"
-          element={
-            <PlaceholderPage
-              title="Sales Orders & Fulfillment"
-              stageNumber="6"
-              description="Process customer orders, calculate taxes and totals, deduct inventory automatically, and print receipts."
-              features={[
-                'Sales order creation with dynamic pricing',
-                'Real-time stock deduction with negative stock prevention',
-                'Receipt and invoice generation with PDF download',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="reports"
-          element={
-            <PlaceholderPage
-              title="Reports & Analytics"
-              stageNumber="7"
-              description="Deep financial, valuation, inventory velocity, and reorder point analytics with CSV and PDF export."
-              features={[
-                'Inventory valuation and stock turnover ratios',
-                'Low-stock threshold warning reports',
-                'Sales revenue vs. COGS (Cost of Goods Sold) graphs',
-                'Instant CSV and formatted PDF export engine',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="settings"
-          element={
-            <PlaceholderPage
-              title="System Configuration"
-              stageNumber="7"
-              description="Global system settings, currency, tax rates, barcode formats, and integration keys."
-              features={[
-                'Company profile, currency symbol, and date formatting',
-                'Low-stock email alert triggers',
-                'Audit log retention and database backup controls',
-              ]}
-            />
-          }
-        />
+        {/* 8. Settings */}
+        <Route path="settings" element={<Settings />} />
+
+        {/* Catch-all 404 */}
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
