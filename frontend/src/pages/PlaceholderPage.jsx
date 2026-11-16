@@ -43,3 +43,4 @@ export default function PlaceholderPage({ title, description, stageNumber, featu
     </div>
   );
 }
+

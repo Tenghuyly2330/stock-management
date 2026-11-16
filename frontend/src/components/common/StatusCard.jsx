@@ -55,3 +55,4 @@ export default function StatusCard({ title, value, icon: Icon, color = 'blue', t
     </div>
   );
 }
+

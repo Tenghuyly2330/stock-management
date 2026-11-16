@@ -148,3 +148,4 @@ npm run build:frontend
 ## Health Check Probes
 - Server Uptime & Memory: `GET http://localhost:5000/api/health`
 - Live PostgreSQL Ping: `GET http://localhost:5000/api/health/db`
+

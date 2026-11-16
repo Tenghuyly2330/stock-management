@@ -7,7 +7,10 @@
     "dev:frontend": "npm --prefix frontend run dev",
     "start:backend": "npm --prefix backend start",
     "build:frontend": "npm --prefix frontend run build",
-    "test:db": "npm --prefix backend run test:db"
+    "test:db": "npm --prefix backend run test:db",
+    "db:migrate": "npm --prefix backend run db:migrate",
+    "db:seed": "npm --prefix backend run db:seed",
+    "db:reset": "npm --prefix backend run db:reset"
   },
   "keywords": [
     "stock-management",
@@ -20,3 +23,4 @@
   "author": "",
   "license": "ISC"
 }
+
