@@ -115,13 +115,18 @@ const getHistory = async (req, res, next) => {
 
     // Format customer name & phone for easy frontend search & identification
     const formattedRows = listResult.rows.map((row) => {
-      let customerName = row.party_name;
+      let customerName = row.party_name || '';
       let customerPhone = '';
-      if (row.party_name && row.party_name.includes('(')) {
-        const match = row.party_name.match(/^(.+?)\s*\(([^)]+)\)$/);
-        if (match) {
-          customerName = match[1].trim();
-          customerPhone = match[2].trim();
+      if (row.party_name) {
+        if (row.party_name.includes('(')) {
+          const match = row.party_name.match(/^(.+?)\s*\(([^)]+)\)$/);
+          if (match) {
+            customerName = match[1].trim();
+            customerPhone = match[2].trim();
+          }
+        } else if (/^[\d+\s\-()]{6,}$/.test(row.party_name.trim())) {
+          customerPhone = row.party_name.trim();
+          customerName = row.party_name.trim();
         }
       }
       return {
@@ -355,19 +360,23 @@ const recordBuyProduct = async (req, res, next) => {
 const recordCheckout = async (req, res, next) => {
   const client = await pool.connect();
   try {
-    const { items, customerName, customerPhone, notes } = req.body;
+    const { items, customer, customerName, customerPhone, notes } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return errorResponse(res, { statusCode: 400, message: 'Cart items cannot be empty' });
     }
 
-    const cleanCustomerName = customerName ? customerName.trim() : 'Walk-in Customer';
-    const cleanCustomerPhone = customerPhone ? customerPhone.trim() : '';
-
-    // Party identifier: "Robert Vance (0987654321)" or "Robert Vance"
-    const partyIdentifier = cleanCustomerPhone 
-      ? `${cleanCustomerName} (${cleanCustomerPhone})` 
-      : cleanCustomerName;
+    // Support single field "customer" (phone or name) or legacy split fields
+    let partyIdentifier = (customer || '').trim();
+    if (!partyIdentifier) {
+      const cleanCustomerName = customerName ? customerName.trim() : '';
+      const cleanCustomerPhone = customerPhone ? customerPhone.trim() : '';
+      if (cleanCustomerName && cleanCustomerPhone) {
+        partyIdentifier = `${cleanCustomerName} (${cleanCustomerPhone})`;
+      } else {
+        partyIdentifier = cleanCustomerName || cleanCustomerPhone || 'Walk-in Customer';
+      }
+    }
 
     await client.query('BEGIN');
 
@@ -428,7 +437,7 @@ const recordCheckout = async (req, res, next) => {
       totalUnits += qty;
 
       // 4. Record stock movement
-      const noteDetails = `POS Sale: ${cleanCustomerName}${cleanCustomerPhone ? ' (Tel: ' + cleanCustomerPhone + ')' : ''} bought ${qty}x ${product.product_name}${notes ? ' - ' + notes.trim() : ''}`;
+      const noteDetails = `Sold to ${partyIdentifier}${notes ? ' - ' + notes.trim() : ''}`;
 
       const moveRes = await client.query(
         `INSERT INTO stock_movements (
@@ -467,10 +476,11 @@ const recordCheckout = async (req, res, next) => {
 
     return successResponse(res, {
       statusCode: 201,
-      message: `Sale completed: ${cleanCustomerName} purchased ${totalUnits} units across ${processedItems.length} products (Total: $${grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`,
+      message: `Sale completed: ${partyIdentifier} purchased ${totalUnits} units across ${processedItems.length} products (Total: $${grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`,
       data: {
-        customerName: cleanCustomerName,
-        customerPhone: cleanCustomerPhone,
+        customer: partyIdentifier,
+        customerName: partyIdentifier,
+        customerPhone: partyIdentifier,
         partyIdentifier,
         totalAmount: grandTotal.toFixed(2),
         totalUnits,

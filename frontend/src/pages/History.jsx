@@ -254,7 +254,6 @@ export default function History() {
                   <th className="py-3 px-4">Customer / Supplier</th>
                   <th className="py-3 px-4 text-right">Total Amount</th>
                   <th className="py-3 px-4">Processed By</th>
-                  <th className="py-3 px-4">Notes</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -305,32 +304,57 @@ export default function History() {
                         </span>
                       </td>
 
-                      {/* Customer / Supplier with Phone Badge */}
+                      {/* Customer / Supplier with Phone or Name */}
                       <td className="py-3 px-4">
-                        <div className="flex items-center gap-1.5 font-bold text-slate-900 text-xs">
-                          {isBuy ? (
-                            <User className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                        {isBuy ? (
+                          row.customer_phone && row.customer_name && row.customer_name !== row.customer_phone ? (
+                            <div>
+                              <div className="flex items-center gap-1.5 font-bold text-slate-900 text-xs">
+                                <User className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                                <span>{row.customer_name}</span>
+                              </div>
+                              <button
+                                onClick={() => setSearch(row.customer_phone)}
+                                className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full text-[11px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 cursor-pointer transition-colors"
+                                title="Click to filter by this phone number"
+                              >
+                                <Phone className="w-2.5 h-2.5" />
+                                <span>{row.customer_phone}</span>
+                              </button>
+                            </div>
+                          ) : row.customer_phone ? (
+                            <div>
+                              <button
+                                onClick={() => setSearch(row.customer_phone)}
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 cursor-pointer transition-colors"
+                                title="Click to filter by this customer phone"
+                              >
+                                <Phone className="w-3 h-3 text-indigo-600" />
+                                <span>{row.customer_phone}</span>
+                              </button>
+                              <span className="text-[10px] text-slate-400 mt-0.5 block">Customer Phone</span>
+                            </div>
                           ) : (
-                            <Building className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                          )}
-                          <span>
-                            {row.customer_name || row.party_name || (isBuy ? 'Walk-in Customer' : 'Owner / Supplier')}
-                          </span>
-                        </div>
-
-                        {isBuy && row.customer_phone ? (
-                          <button
-                            onClick={() => setSearch(row.customer_phone)}
-                            className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full text-[11px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 cursor-pointer transition-colors"
-                            title="Click to search all orders by this phone number"
-                          >
-                            <Phone className="w-2.5 h-2.5" />
-                            <span>{row.customer_phone}</span>
-                          </button>
+                            <div>
+                              <button
+                                onClick={() => setSearch(row.party_name || '')}
+                                className="flex items-center gap-1.5 font-bold text-slate-900 text-xs hover:text-indigo-600 cursor-pointer transition-colors"
+                                title="Click to filter by this customer"
+                              >
+                                <User className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                                <span>{row.customer_name || row.party_name || 'Walk-in Customer'}</span>
+                              </button>
+                              <span className="text-[10px] text-slate-400 uppercase mt-0.5 block">Customer</span>
+                            </div>
+                          )
                         ) : (
-                          <span className="text-[10px] text-slate-400 uppercase mt-0.5 block">
-                            {isBuy ? 'Customer' : 'Owner / Supplier'}
-                          </span>
+                          <div>
+                            <div className="flex items-center gap-1.5 font-bold text-slate-900 text-xs">
+                              <Building className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                              <span>{row.party_name || 'Owner / Supplier'}</span>
+                            </div>
+                            <span className="text-[10px] text-slate-400 uppercase mt-0.5 block">Owner / Restock</span>
+                          </div>
                         )}
                       </td>
 
@@ -353,11 +377,6 @@ export default function History() {
                           <span className="font-medium">{row.user_name || 'System Admin'}</span>
                         </div>
                         <span className="text-[10px] text-slate-400">{row.user_email || ''}</span>
-                      </td>
-
-                      {/* Notes */}
-                      <td className="py-3 px-4 text-xs text-slate-500 max-w-xs truncate" title={row.notes}>
-                        {row.notes || '—'}
                       </td>
                     </tr>
                   );
