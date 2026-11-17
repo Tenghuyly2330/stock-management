@@ -419,7 +419,7 @@ export default function Products() {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
+          <h1 className="text-lg md:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <Package className="w-7 h-7 text-indigo-600" />
             Products & Point of Sale
           </h1>
@@ -572,10 +572,10 @@ export default function Products() {
                     <tr>
                       <th className="py-3 px-4">Product</th>
                       <th className="py-3 px-3">Category</th>
-                      <th className="py-3 px-3 text-center">Base Stock</th>
-                      <th className="py-3 px-4 text-right">Unit Price</th>
-                      <th className="py-3 px-4 text-center">Add to Cart</th>
-                      {canManage && <th className="py-3 px-3 text-right">Owner Actions</th>}
+                      <th className="py-3 px-3 text-center">Stock</th>
+                      <th className="py-3 px-4 text-right">Price</th>
+                      <th className="py-3 px-4 text-center">Add</th>
+                      {canManage && <th className="py-3 px-3 text-right">Actions</th>}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -598,18 +598,18 @@ export default function Products() {
                                 <img
                                   src={p.image_url}
                                   alt={p.name}
-                                  className="w-12 h-12 object-cover rounded-lg border border-slate-200 shrink-0"
+                                  className="md:w-12 w-8 md:h-12 h-8 object-cover rounded-lg border border-slate-200 shrink-0"
                                 />
                               ) : (
-                                <div className="w-12 h-12 rounded-lg border border-slate-200 bg-slate-100 flex items-center justify-center shrink-0 text-slate-400">
-                                  <Package className="w-6 h-6" />
+                                <div className="md:w-12 w-8 md:h-12 h-8 rounded-lg border border-slate-200 bg-slate-100 flex items-center justify-center shrink-0 text-slate-400">
+                                  <Package className="md:w-6 w-4 md:h-6 h-4" />
                                 </div>
                               )}
                               <div>
-                                <div className="font-bold text-slate-900 leading-tight">
+                                <div className="md:font-bold font-semibold text-slate-900 leading-tight">
                                   {p.name}
                                 </div>
-                                <div className="text-xs text-indigo-600 mt-0.5">
+                                <div className="md:text-sm text-[10px] text-indigo-600 mt-0.5">
                                   {p.sku}
                                 </div>
                               </div>
@@ -641,7 +641,6 @@ export default function Products() {
                             )}
                           </td>
 
-                          {/* 4. Unit Price */}
                           <td className="py-3 px-4 text-right whitespace-nowrap">
                             <div className="font-mono font-bold text-slate-900 text-sm">
                               ${parseFloat(p.selling_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -683,12 +682,11 @@ export default function Products() {
                                 className="px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 hover:border-transparent transition-all cursor-pointer inline-flex items-center gap-1.5"
                               >
                                 <ShoppingCart className="w-3.5 h-3.5" />
-                                Add to Cart
+                                Add
                               </button>
                             )}
                           </td>
 
-                          {/* Restock + Edit + Delete */}
                           {canManage && (
                             <td className="py-3 px-3 text-right whitespace-nowrap">
                               <div className="flex items-center justify-end gap-1.5">

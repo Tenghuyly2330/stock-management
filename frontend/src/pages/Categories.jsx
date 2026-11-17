@@ -138,15 +138,11 @@ export default function Categories() {
         <title>Categories | HouseStock</title>
       </Helmet>
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Category Taxonomy</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed, veritatis.
-          </p>
-        </div>
+      <div className="flex flex-row sm:items-center justify-between gap-4">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Category</h1>
 
-        {canManage && (
+        <div>
+          {canManage && (
           <button
             onClick={() => {
               setFormData({ name: '', description: '' });
@@ -156,9 +152,10 @@ export default function Categories() {
             className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition"
           >
             <Plus className="w-4 h-4" />
-            <span>Add New Category</span>
+            <span>Add Category</span>
           </button>
         )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -227,10 +224,10 @@ export default function Categories() {
           <table className="w-full text-left text-sm text-slate-600">
             <thead className="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
               <tr>
-                <th scope="col" className="px-6 py-3.5">Category Name</th>
+                <th scope="col" className="px-6 py-3.5">Category</th>
                 <th scope="col" className="px-6 py-3.5">Description</th>
-                <th scope="col" className="px-6 py-3.5">Linked Products</th>
-                <th scope="col" className="px-6 py-3.5">Total Physical Stock</th>
+                <th scope="col" className="px-6 py-3.5">Products</th>
+                <th scope="col" className="px-6 py-3.5">Total Stock</th>
                 <th scope="col" className="px-6 py-3.5">Status</th>
                 <th scope="col" className="px-6 py-3.5 text-right">Actions</th>
               </tr>
@@ -280,7 +277,7 @@ export default function Categories() {
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
                         <Boxes className="w-3.5 h-3.5 text-slate-500" />
-                        <span>{c.total_stock_units} Units</span>
+                        <span>{c.total_stock_units}</span>
                       </span>
                     </td>
 

@@ -41,8 +41,8 @@ export default function Sidebar({ isOpen, onClose }) {
       >
         <div className="flex h-16 items-center justify-between px-6 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-100">
-              <Boxes className="h-6 w-6" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-white shadow-md shadow-indigo-100">
+              H
             </div>
             <div>
               <span className="text-lg font-bold text-slate-900 tracking-tight">HouseStock</span>

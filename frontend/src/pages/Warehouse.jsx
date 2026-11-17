@@ -157,14 +157,14 @@ export default function WarehousePage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsAddStockModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl shadow-xs transition cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] md:text-sm font-semibold rounded-xl shadow-xs transition cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>Add Stock to Base</span>
+              <span>Add Stock</span>
             </button>
             <button
               onClick={() => setIsEditModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-xl transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-[11px] md:text-sm font-semibold rounded-xl transition cursor-pointer"
             >
               <Edit2 className="w-4 h-4 text-slate-500" />
               <span>Edit Base Info</span>
@@ -279,12 +279,12 @@ export default function WarehousePage() {
             <table className="w-full text-left text-sm text-slate-600">
               <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500 border-b border-slate-200">
                 <tr>
-                  <th className="py-3 px-4">Product Name & SKU</th>
+                  <th className="py-3 px-4">Name & SKU</th>
                   <th className="py-3 px-4">Category</th>
                   <th className="py-3 px-4 text-center">Stock Level</th>
                   <th className="py-3 px-4 text-right">Units In Base</th>
-                  <th className="py-3 px-4 text-right">Unit Cost</th>
-                  <th className="py-3 px-4 text-right">Total Base Value</th>
+                  <th className="py-3 px-4 text-right">Price`</th>
+                  <th className="py-3 px-4 text-right">Total Value</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
