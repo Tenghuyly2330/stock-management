@@ -104,30 +104,30 @@ export default function Dashboard() {
           title="Catalog SKUs"
           value={dashboardData.totalProducts}
           icon={Package}
-          color="blue"
-          trend={{ isPositive: true, text: 'Machinery & Metals' }}
+          // color="blue"
+          // trend={{ isPositive: true, text: 'Machinery & Metals' }}
           // subtitle="Catalog Product Records"
         />
         <StatusCard
           title="Units in Base Warehouse"
           value={dashboardData.totalBaseUnits.toLocaleString()}
           icon={Boxes}
-          color="emerald"
-          trend={{ isPositive: true, text: 'BASE' }}
+          // color="emerald"
+          // trend={{ isPositive: true, text: 'BASE' }}
         />
         <StatusCard
           title="Inventory Valuation"
           value={`$${parseFloat(dashboardData.totalValuation || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
           icon={DollarSign}
-          color="purple"
-          trend={{ isPositive: true, text: 'Cost Basis' }}
+          // color="purple"
+          // trend={{ isPositive: true, text: 'Cost Basis' }}
         />
         <StatusCard
           title="Low Stock Warnings"
           value={dashboardData.lowStockCount}
           icon={AlertTriangle}
-          color="rose"
-          trend={{ isPositive: false, text: 'Needs Reorder' }}
+          // color="rose"
+          // trend={{ isPositive: false, text: 'Needs Reorder' }}
         />
       </div>
 

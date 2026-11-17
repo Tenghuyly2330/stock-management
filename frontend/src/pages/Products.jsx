@@ -460,28 +460,28 @@ export default function Products() {
           value={products.length}
           icon={Package}
           color="indigo"
-          subtitle="Machinery & Metals"
+          // subtitle="Machinery & Metals"
         />
         <StatusCard
           title="Base Stock Units"
           value={totalUnits.toLocaleString()}
           icon={Boxes}
           color="emerald"
-          subtitle="Warehouse BASE-01"
+          // subtitle="Warehouse BASE-01"
         />
         <StatusCard
           title="Catalog Retail Value"
           value={`$${totalValuation.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
           icon={DollarSign}
           color="amber"
-          subtitle="Total stock valuation"
+          // subtitle="Total stock valuation"
         />
         <StatusCard
           title="Cart Items"
           value={`${cart.length} (${cartTotalUnits} units)`}
           icon={ShoppingCart}
           color="blue"
-          subtitle={`Total: $${cartSubtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          // subtitle={`Total: $${cartSubtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
         />
       </div>
 

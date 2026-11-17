@@ -118,28 +118,28 @@ export default function History() {
           value={stats.total_bought_units.toLocaleString()}
           icon={ShoppingCart}
           color="blue"
-          trend={{ isPositive: true, text: 'Sales' }}
+          // trend={{ isPositive: true, text: 'Sales' }}
         />
         <StatusCard
           title="Total Sales Revenue"
           value={`$${parseFloat(stats.total_bought_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           icon={DollarSign}
           color="emerald"
-          trend={{ isPositive: true, text: 'Revenue' }}
+          // trend={{ isPositive: true, text: 'Revenue' }}
         />
         <StatusCard
           title="Owner Added (Restocks)"
           value={stats.total_added_units.toLocaleString()}
           icon={Boxes}
           color="purple"
-          trend={{ isPositive: true, text: 'Restocked' }}
+          // trend={{ isPositive: true, text: 'Restocked' }}
         />
         <StatusCard
           title="Procurement Spend"
           value={`$${parseFloat(stats.total_added_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           icon={DollarSign}
           color="amber"
-          trend={{ isPositive: false, text: 'Cost Basis' }}
+          // trend={{ isPositive: false, text: 'Cost Basis' }}
           // subtitle="Total spent procuring stock"
         />
       </div>

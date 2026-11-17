@@ -164,24 +164,24 @@ export default function Categories() {
           value={categories.length}
           icon={Layers}
           color="blue"
-          trend={{ isPositive: true, text: 'Hierarchies' }}
-          subtitle="Taxonomy Classifications"
+          // trend={{ isPositive: true, text: 'Hierarchies' }}
+          // subtitle="Taxonomy Classifications"
         />
         <StatusCard
           title="Products Categorized"
           value={totalProductsClassified}
           icon={Package}
           color="emerald"
-          trend={{ isPositive: true, text: 'Catalog Coverage' }}
-          subtitle="SKU Records Linked"
+          // trend={{ isPositive: true, text: 'Catalog Coverage' }}
+          // subtitle="SKU Records Linked"
         />
         <StatusCard
-          title="Stock Units in Taxonomy"
+          title="Stock Units"
           value={totalStockUnits}
           icon={Boxes}
           color="purple"
-          trend={{ isPositive: true, text: 'Units Tracked' }}
-          subtitle="Distributed in Warehouses"
+          // trend={{ isPositive: true, text: 'Units Tracked' }}
+          // subtitle="Distributed in Warehouses"
         />
       </div>
 
