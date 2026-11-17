@@ -27,6 +27,9 @@ COPY --chown=nodejs:nodejs . .
 
 USER nodejs
 
+LABEL org.opencontainers.image.source="https://github.com/Tenghuyly2330/stock-management"
+LABEL org.opencontainers.image.description="HouseStock Stock Management Backend API"
+
 EXPOSE 5000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

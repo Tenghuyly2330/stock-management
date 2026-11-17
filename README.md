@@ -32,7 +32,7 @@ A production-grade, enterprise Stock & Inventory Management Web Application buil
                                              v                                               v
                               +-------------------------------+               +-------------------------------+
                               |      PostgreSQL 16 Engine     |               |      Prometheus & Grafana     |
-                              |  (Atomic TXNs, FOR UPDATE)    |               |  (Real-time HTTP/DB Telemetry)|
+                              |  (FOR UPDATE)                 |               |  (Real-time HTTP/DB Telemetry)|
                               +-------------------------------+               +-------------------------------+
 ```
 
@@ -44,10 +44,10 @@ The application is tailored for **Farm Machinery & Industrial Metals** distribut
 
 | # | Module | Route | Description |
 |---|---|---|---|
-| 1 | **Dashboard** | `/` | Real-time Base Warehouse valuation, inventory counts, quick movement ledger, and KPIs. |
-| 2 | **Products** | `/products` | Catalog for Farm Machinery and Metals with short names, SKU, pricing, and Cloudinary image sync. |
-| 3 | **Categories** | `/categories` | Exactly 2 active divisions: `Farm Machines` and `Metals`. |
-| 4 | **Warehouse** | `/warehouse` | **1 is Base**: Dedicated control center for `Main Base Warehouse (BASE-01)`. |
+| 1 | **Dashboard** | `/` 
+| 2 | **Products** | `/products` 
+| 3 | **Categories** | `/categories` 
+| 4 | **Warehouse** | `/warehouse`
 | 5 | **History** | `/history` | **Who buy and add products**: Unified ledger tracking customer sales (deductions) and vendor restocks (additions). |
 | 6 | **Suppliers** | `/suppliers` | Industrial machinery and metallurgical suppliers with order history and contact details. |
 | 7 | **Users** | `/users` | Role-Based Access Control (**Admin**, **Manager**, **Staff**) with secure password management. |
@@ -123,7 +123,7 @@ The automated workflow located at `.github/workflows/ci-cd.yml` executes on ever
 
 ---
 
-## 9. Kubernetes Deployment
+## 8. Kubernetes Deployment
 
 Production manifests are structured in the `k8s/` directory.
 
