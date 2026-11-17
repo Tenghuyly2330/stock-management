@@ -24,7 +24,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 LABEL org.opencontainers.image.source="https://github.com/Tenghuyly2330/stock-management"
-LABEL org.opencontainers.image.description="HouseStock Stock Management Frontend Client"
+LABEL org.opencontainers.image.description="HouseStock Stock Management Frontend"
 
 EXPOSE 80
 

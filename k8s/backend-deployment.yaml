@@ -32,7 +32,7 @@ spec:
         fsGroup: 1001
       containers:
         - name: backend
-          image: ghcr.io/your-org/stock-backend:latest
+          image: ghcr.io/tenghuyly2330/stock-backend:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000

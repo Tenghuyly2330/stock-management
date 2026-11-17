@@ -89,75 +89,19 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Lowercase Repository Name for Docker
-        run: |
-          echo "IMAGE_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
-      - name: Set Up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Authenticate with GitHub Container Registry (GHCR)
+      - name: Log in to GitHub Container Registry (GHCR)
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Authenticate with Docker Hub (Optional)
-        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build & Push Backend Docker Image
+        run: |
+          docker build -t ghcr.io/tenghuyly2330/stock-backend:latest ./backend
+          docker push ghcr.io/tenghuyly2330/stock-backend:latest
 
-      - name: Extract Backend Image Metadata
-        id: meta-backend
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_REPO }}/backend
-            ${{ secrets.DOCKERHUB_USERNAME && format('{0}/stock-backend', secrets.DOCKERHUB_USERNAME) || '' }}
-          tags: |
-            type=raw,value=latest
-            type=sha,format=short
-          labels: |
-            org.opencontainers.image.source=https://github.com/${{ github.repository }}
-            org.opencontainers.image.description=HouseStock Stock Management Backend API
-
-      - name: Build and Push Backend Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          push: true
-          tags: ${{ steps.meta-backend.outputs.tags }}
-          labels: ${{ steps.meta-backend.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Extract Frontend Image Metadata
-        id: meta-frontend
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_REPO }}/frontend
-            ${{ secrets.DOCKERHUB_USERNAME && format('{0}/stock-frontend', secrets.DOCKERHUB_USERNAME) || '' }}
-          tags: |
-            type=raw,value=latest
-            type=sha,format=short
-          labels: |
-            org.opencontainers.image.source=https://github.com/${{ github.repository }}
-            org.opencontainers.image.description=HouseStock Stock Management Frontend Client
-
-      - name: Build and Push Frontend Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          build-args: |
-            VITE_API_BASE_URL=/api
-          push: true
-          tags: ${{ steps.meta-frontend.outputs.tags }}
-          labels: ${{ steps.meta-frontend.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Build & Push Frontend Docker Image
+        run: |
+          docker build --build-arg VITE_API_BASE_URL=/api -t ghcr.io/tenghuyly2330/stock-frontend:latest ./frontend
+          docker push ghcr.io/tenghuyly2330/stock-frontend:latest
