@@ -1,4 +1,3 @@
-
 FROM node:20-alpine AS deps
 WORKDIR /app
 
@@ -26,9 +25,6 @@ COPY --from=deps --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --chown=nodejs:nodejs . .
 
 USER nodejs
-
-LABEL org.opencontainers.image.source="https://github.com/Tenghuyly2330/stock-management"
-LABEL org.opencontainers.image.description="HouseStock Stock Management Backend API"
 
 EXPOSE 5000
 
