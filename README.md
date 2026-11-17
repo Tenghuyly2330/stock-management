@@ -44,14 +44,14 @@ The application is tailored for **Farm Machinery & Industrial Metals** distribut
 
 | # | Module | Route | Description |
 |---|---|---|---|
-| 1 | **Dashboard** | `/` 
-| 2 | **Products** | `/products` 
-| 3 | **Categories** | `/categories` 
-| 4 | **Warehouse** | `/warehouse`
-| 5 | **History** | `/history` | **Who buy and add products**: Unified ledger tracking customer sales (deductions) and vendor restocks (additions). |
-| 6 | **Suppliers** | `/suppliers` | Industrial machinery and metallurgical suppliers with order history and contact details. |
-| 7 | **Users** | `/users` | Role-Based Access Control (**Admin**, **Manager**, **Staff**) with secure password management. |
-| 8 | **Settings** | `/settings` | Base Warehouse configuration, company branding, and security credentials update. |
+| 1 | **Dashboard** | `/` |
+| 2 | **Products** | `/products` | 
+| 3 | **Categories** | `/categories` | 
+| 4 | **Warehouse** | `/warehouse` |
+| 5 | **History** | `/history` | 
+| 6 | **Suppliers** | `/suppliers` | 
+| 7 | **Users** | `/users` | 
+| 8 | **Settings** | `/settings` |
 ---
 
 ## 3. Default Demo Credentials
